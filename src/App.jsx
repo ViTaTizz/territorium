@@ -792,13 +792,10 @@ function StatsView({ territori, assignments, onClose }) {
       new Date(t.last_return_date) >= rangeStart &&
       new Date(t.last_return_date) <= rangeEnd
     );
-    const todo = filteredTerritories.filter(t =>
-      t.is_available && (
-        !t.last_return_date ||
-        new Date(t.last_return_date) < rangeStart ||
-        new Date(t.last_return_date) > rangeEnd
-      )
-    );
+    // Da assegnare = all territories NOT in working and NOT in finished
+    const workingIds = new Set(working.map(t => t.id));
+    const finishedIds = new Set(finished.map(t => t.id));
+    const todo = filteredTerritories.filter(t => !workingIds.has(t.id) && !finishedIds.has(t.id));
 
     return {
       working,
