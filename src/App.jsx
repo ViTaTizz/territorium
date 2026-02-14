@@ -25,9 +25,103 @@ import { PieChart as RePieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend
 
 // Mock users for UI names (in a real app these would be in a profile table)
 const USERS_LIST = [
-  { id: '1', name: 'Marco' },
-  { id: '2', name: 'Giulia' },
-  { id: '3', name: 'Luca' }
+  { id: '1', name: 'Alesci Angela' },
+  { id: '2', name: 'Ameris Marisa' },
+  { id: '3', name: 'Antufermo Antonia' },
+  { id: '4', name: 'Arena Carmela' },
+  { id: '5', name: 'Arsalice Carla' },
+  { id: '6', name: 'Astuto Carmen' },
+  { id: '7', name: 'Astuto Sebastiano' },
+  { id: '8', name: 'Battistutta Carlo' },
+  { id: '9', name: 'Battistutta Gabriele' },
+  { id: '10', name: 'Battistutta Sabrina' },
+  { id: '11', name: 'Beltrani Lidia' },
+  { id: '12', name: 'Benzoni Rosangela' },
+  { id: '13', name: 'Bertoncello Giancarlo' },
+  { id: '14', name: 'Bertoncello Ivana' },
+  { id: '15', name: 'Bonvissuto Angelo' },
+  { id: '16', name: 'Bosso Livio' },
+  { id: '17', name: 'Bosso Rosalia' },
+  { id: '18', name: 'Carballo Silvia' },
+  { id: '19', name: 'Ceretto Amalia' },
+  { id: '20', name: 'Ceretto Roberto' },
+  { id: '21', name: 'Chavarria Antonio' },
+  { id: '22', name: 'Chavarria Emily' },
+  { id: '23', name: 'Chavarria Evelyn' },
+  { id: '24', name: 'Cona Angelo' },
+  { id: '25', name: 'Cona Dario' },
+  { id: '26', name: 'Cona Rosa' },
+  { id: '27', name: 'Conte Barbara' },
+  { id: '28', name: 'Conte Marco' },
+  { id: '29', name: 'Cribellati Gianfranco' },
+  { id: '30', name: 'Crittino Fabio' },
+  { id: '31', name: 'De Cesare Maria' },
+  { id: '32', name: 'De Cesare Santino' },
+  { id: '33', name: 'De Narzio Paola' },
+  { id: '34', name: 'De Vita Barbara' },
+  { id: '35', name: 'DeGiovanni Marco' },
+  { id: '36', name: 'Dierna Laura' },
+  { id: '37', name: 'Dierna Rocco' },
+  { id: '38', name: 'Driusso Mauro' },
+  { id: '39', name: 'Egitto Anna' },
+  { id: '40', name: 'Egitto Salvatore' },
+  { id: '41', name: 'Egitto Valentina' },
+  { id: '42', name: 'Ferrara Angela' },
+  { id: '43', name: 'Ferrara Gaetano' },
+  { id: '44', name: 'Floris Alessia' },
+  { id: '45', name: 'Floris Claudio' },
+  { id: '46', name: 'Formigoni William' },
+  { id: '47', name: 'Frustairero Antonia' },
+  { id: '48', name: 'Giraudo Alessandra' },
+  { id: '49', name: 'Giraudo Federico' },
+  { id: '50', name: 'Giraudo Flavio' },
+  { id: '51', name: 'Giraudo Matteo' },
+  { id: '52', name: 'Gruggio Mariella' },
+  { id: '53', name: 'Guerrera Maria' },
+  { id: '54', name: 'Imerone Alessandro' },
+  { id: '55', name: 'Manfredi Irene' },
+  { id: '56', name: 'Martin Lidia' },
+  { id: '57', name: 'Massa Michele' },
+  { id: '58', name: 'Monte Angela' },
+  { id: '59', name: 'Monte Domenico' },
+  { id: '60', name: 'Monte Giuseppina' },
+  { id: '61', name: 'Monte Maria Teresa' },
+  { id: '62', name: 'Monte Tommaso' },
+  { id: '63', name: 'Montesso Ivana' },
+  { id: '64', name: 'Nigra Angela' },
+  { id: '65', name: 'Nigra Rosalba' },
+  { id: '66', name: 'Nodari Daniela' },
+  { id: '67', name: 'Nodari Pier Giacomo' },
+  { id: '68', name: 'Palmirotta Gessica' },
+  { id: '69', name: 'Palmirotta Loretta' },
+  { id: '70', name: 'Palmirotta Stefano' },
+  { id: '71', name: 'Palmirotta Valentino' },
+  { id: '72', name: 'Peretti Teresa' },
+  { id: '73', name: 'Piazzano Antonella' },
+  { id: '74', name: 'Piazzano Daniele' },
+  { id: '75', name: 'Plona Adriano' },
+  { id: '76', name: 'Plona Annarita' },
+  { id: '77', name: 'Poeta Valeria' },
+  { id: '78', name: 'Poeta Vittorio' },
+  { id: '79', name: 'Renditore Fabrizio' },
+  { id: '80', name: 'Renditore Gian Pietro' },
+  { id: '81', name: 'Renditore Lucia' },
+  { id: '82', name: 'Renditore Sabrina' },
+  { id: '83', name: 'Rovea Ernestina' },
+  { id: '84', name: 'Sabarino Giovanni' },
+  { id: '85', name: 'Sabarino Pierina' },
+  { id: '86', name: 'Sabarino Rachele' },
+  { id: '87', name: 'Slano Patrizia' },
+  { id: '88', name: 'Specchio Mariella' },
+  { id: '89', name: 'Vizdoaga Jana' },
+  { id: '90', name: 'Vitaliani Andrea' },
+  { id: '91', name: 'Vitaliani Denise' },
+  { id: '92', name: 'Vitaliani Giorgio' },
+  { id: '93', name: 'Vitaliani Graziella' },
+  { id: '94', name: 'Vitaliani Simone' },
+  { id: '95', name: 'Vitaliani Sonia' },
+  { id: '96', name: 'Vitaliani Tiziano' },
+  { id: '97', name: 'Zire Naomi' }
 ];
 
 function Login() {
@@ -536,7 +630,7 @@ function App() {
                 </a>
               </div>
               <div style={{ marginBottom: '24px' }}>
-                <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '8px' }}>Istruzioni Speciali</label>
+                <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '8px' }}>Note</label>
                 <textarea className="search-input" style={{ width: '100%', height: '100px' }} value={editNotes} onChange={e => setEditNotes(e.target.value)} />
               </div>
               <div style={{ display: 'flex', gap: '12px', marginTop: '12px' }}>
@@ -545,9 +639,6 @@ function App() {
                 ) : (
                   <button className="btn btn-primary clickable" style={{ flex: 2 }} onClick={handleSaveNotes}>Salva Note</button>
                 )}
-                <button className="btn btn-secondary clickable" style={{ border: '1px solid #FEE2E2', color: '#DC2626', flex: 1 }} onClick={() => handleDeleteTerritory(selectedTerritory.id)} title="Elimina">
-                  Elimina
-                </button>
                 <button className="btn btn-secondary clickable" style={{ flex: 1 }} onClick={() => setShowDetailModal(false)}>Chiudi</button>
               </div>
             </div>
@@ -805,7 +896,7 @@ function StatsView({ territori, assignments, onClose }) {
                 <div style={{ opacity: 0.8, marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '3px' }}>
                   <span><strong style={{ color: 'var(--primary)' }}>In Lavorazione</strong> — territori attualmente assegnati e non ancora riconsegnati.</span>
                   <span><strong style={{ color: '#10B981' }}>Rientrati</strong> — territori riconsegnati nel periodo selezionato.</span>
-                  <span><strong style={{ color: '#F59E0B' }}>Da assegnare</strong> — tutti i territori non rientrati nel periodo selezionato.</span>
+                  <span><strong style={{ color: '#F59E0B' }}>Da assegnare</strong> — tutti i territori non assegnati nel periodo selezionato.</span>
                 </div>
               </div>
             </div>
@@ -839,7 +930,7 @@ function StatsView({ territori, assignments, onClose }) {
                   </div>
                   <span><strong>In Lavorazione</strong> — assegnati e non riconsegnati.</span>
                   <span><strong style={{ color: '#10B981' }}>Rientrati</strong> — riconsegnati nel periodo.</span>
-                  <span><strong style={{ color: '#F59E0B' }}>Da assegnare</strong> — non rientrati nel periodo.</span>
+                  <span><strong style={{ color: '#F59E0B' }}>Da assegnare</strong> — non assegnati nel periodo.</span>
                 </div>
               )}
             </div>
