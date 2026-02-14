@@ -19,7 +19,9 @@ import {
   Loader2,
   RefreshCw,
   PieChart as PieChartIcon,
-  Info
+  Info,
+  AlertTriangle,
+  AlertOctagon
 } from 'lucide-react';
 import { PieChart as RePieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
@@ -217,6 +219,7 @@ function App() {
   const [filterCountry, setFilterCountry] = useState('');
   const [filterType, setFilterType] = useState('');
   const [filterAssignee, setFilterAssignee] = useState('');
+  const [filterExpiry, setFilterExpiry] = useState('');
   const [historyStart, setHistoryStart] = useState('');
   const [historyEnd, setHistoryEnd] = useState('');
 
@@ -253,7 +256,10 @@ function App() {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'territori' }, (payload) => {
         console.log('Evento Territori:', payload);
         if (payload.eventType === 'INSERT') {
-          setTerritori(prev => [...prev, payload.new].sort((a, b) => parseInt(a.number) - parseInt(b.number)));
+          setTerritori(prev => {
+            if (prev.some(t => t.id === payload.new.id)) return prev;
+            return [...prev, payload.new].sort((a, b) => parseInt(a.number) - parseInt(b.number));
+          });
         } else if (payload.eventType === 'UPDATE') {
           setTerritori(prev => prev.map(t => t.id === payload.new.id ? payload.new : t));
         } else if (payload.eventType === 'DELETE') {
@@ -263,7 +269,10 @@ function App() {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'assegnazioni' }, (payload) => {
         console.log('Evento Assegnazioni:', payload);
         if (payload.eventType === 'INSERT') {
-          setAssignments(prev => [...prev, payload.new]);
+          setAssignments(prev => {
+            if (prev.some(a => a.id === payload.new.id)) return prev;
+            return [...prev, payload.new];
+          });
         } else if (payload.eventType === 'UPDATE') {
           setAssignments(prev => prev.map(a => a.id === payload.new.id ? payload.new : a));
         } else if (payload.eventType === 'DELETE') {
@@ -295,6 +304,21 @@ function App() {
       .sort((a, b) => new Date(a.last_return_date) - new Date(b.last_return_date));
   }, [territori, filterCountry, filterType, searchQuery]);
 
+  // Helper: compute expiry status for an assignment
+  const getExpiryStatus = useCallback((assignmentDate) => {
+    const now = new Date();
+    const assigned = new Date(assignmentDate);
+    const fourMonths = new Date(assigned);
+    fourMonths.setMonth(fourMonths.getMonth() + 4);
+    const twoWeeksBefore = new Date(fourMonths);
+    twoWeeksBefore.setDate(twoWeeksBefore.getDate() - 14);
+    const daysLeft = Math.ceil((fourMonths - now) / (1000 * 60 * 60 * 24));
+
+    if (now >= fourMonths) return { status: 'expired', daysLeft };
+    if (now >= twoWeeksBefore) return { status: 'expiring', daysLeft };
+    return { status: 'ok', daysLeft };
+  }, []);
+
   const filteredWorking = useMemo(() => {
     return assignments
       .filter(a => !a.is_completed)
@@ -305,8 +329,16 @@ function App() {
       .filter(a => a.territory)
       .filter(a => (filterCountry === '' || a.territory.country === filterCountry))
       .filter(a => (filterAssignee === '' || a.assignee_name === filterAssignee))
+      .filter(a => {
+        if (filterExpiry === '') return true;
+        const { status } = getExpiryStatus(a.assignment_date);
+        if (filterExpiry === 'expiring') return status === 'expiring';
+        if (filterExpiry === 'expired') return status === 'expired';
+        if (filterExpiry === 'alert') return status === 'expiring' || status === 'expired';
+        return true;
+      })
       .filter(a => (searchQuery === '' || a.territory.country.toLowerCase().includes(searchQuery.toLowerCase()) || a.territory.number.includes(searchQuery) || a.assignee_name.toLowerCase().includes(searchQuery.toLowerCase())));
-  }, [assignments, territori, filterCountry, filterAssignee, searchQuery]);
+  }, [assignments, territori, filterCountry, filterAssignee, filterExpiry, searchQuery, getExpiryStatus]);
 
   const filteredReturned = useMemo(() => {
     return territori
@@ -367,10 +399,8 @@ function App() {
       return;
     }
 
-    // Manual update for instant UI feedback
-    const savedAssignment = data[0];
-    setAssignments(prev => [...prev, savedAssignment]);
-    setTerritori(prev => prev.map(t => t.id === selectedTerritory.id ? { ...t, is_available: false } : t));
+    // Refresh all data for consistent state
+    await fetchData();
 
     setShowAssignModal(false);
     setSelectedTerritory(null);
@@ -396,9 +426,8 @@ function App() {
 
       if (tError) { alert(tError.message); return; }
 
-      // Manual update
-      setAssignments(prev => prev.map(a => a.id === activeAssignment.id ? { ...a, return_date: customDate, is_completed: true } : a));
-      setTerritori(prev => prev.map(t => t.id === selectedTerritory.id ? { ...t, is_available: true, last_return_date: customDate } : t));
+      // Refresh all data for consistent state
+      await fetchData();
     }
 
     setShowReturnModal(false);
@@ -496,29 +525,47 @@ function App() {
             <input className="search-input" placeholder="Cerca..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
           </div>
 
-          <div style={{ display: 'flex', gap: '8px', overflowX: 'auto' }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {activeTab !== 'storico' && (
-              <select className="filter-select clickable" value={filterCountry} onChange={(e) => setFilterCountry(e.target.value)}>
+              <select className="filter-select clickable" value={filterCountry} onChange={(e) => setFilterCountry(e.target.value)} style={{ flex: '1 1 auto', minWidth: '90px' }}>
                 <option value="">Paese</option>
                 {countries.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             )}
             {activeTab === 'disponibili' ? (
-              <select className="filter-select clickable" value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+              <select className="filter-select clickable" value={filterType} onChange={(e) => setFilterType(e.target.value)} style={{ flex: '1 1 auto', minWidth: '80px' }}>
                 <option value="">Tipo</option>
                 {types.map(t => <option key={t} value={t}>{t}</option>)}
               </select>
             ) : activeTab === 'lavorazione' ? (
-              <select className="filter-select clickable" value={filterAssignee} onChange={(e) => setFilterAssignee(e.target.value)}>
-                <option value="">Incaricato</option>
-                {USERS_LIST.map(u => <option key={u.name} value={u.name}>{u.name}</option>)}
-              </select>
+              <>
+                <select className="filter-select clickable" value={filterAssignee} onChange={(e) => setFilterAssignee(e.target.value)} style={{ flex: '1 1 auto', minWidth: '120px' }}>
+                  <option value="">Incaricato</option>
+                  {USERS_LIST.map(u => <option key={u.name} value={u.name}>{u.name}</option>)}
+                </select>
+                <select className="filter-select clickable" value={filterExpiry} onChange={(e) => setFilterExpiry(e.target.value)} style={{ flex: '1 1 auto', minWidth: '110px' }}>
+                  <option value="">Scadenza</option>
+                  <option value="alert">⚠️ In scadenza + Scaduti</option>
+                  <option value="expiring">🟡 In scadenza</option>
+                  <option value="expired">🔴 Scaduti</option>
+                </select>
+              </>
             ) : (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--bg-card)', padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--border-medium)' }}>
-                <input type="date" value={historyStart} onChange={(e) => setHistoryStart(e.target.value)} style={{ background: 'transparent', border: 'none', fontSize: '13px', outline: 'none' }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--bg-card)', padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--border-medium)', flex: '1 1 auto' }}>
+                <input type="date" value={historyStart} onChange={(e) => setHistoryStart(e.target.value)} style={{ background: 'transparent', border: 'none', fontSize: '13px', outline: 'none', flex: 1, minWidth: 0 }} />
                 <ChevronRight size={12} color="var(--text-muted)" />
-                <input type="date" value={historyEnd} onChange={(e) => setHistoryEnd(e.target.value)} style={{ background: 'transparent', border: 'none', fontSize: '13px', outline: 'none' }} />
+                <input type="date" value={historyEnd} onChange={(e) => setHistoryEnd(e.target.value)} style={{ background: 'transparent', border: 'none', fontSize: '13px', outline: 'none', flex: 1, minWidth: 0 }} />
               </div>
+            )}
+            {(searchQuery || filterCountry || filterType || filterAssignee || filterExpiry || historyStart || historyEnd) && (
+              <button
+                className="btn btn-secondary clickable"
+                onClick={() => { setSearchQuery(''); setFilterCountry(''); setFilterType(''); setFilterAssignee(''); setFilterExpiry(''); setHistoryStart(''); setHistoryEnd(''); }}
+                title="Reset filtri"
+                style={{ width: '36px', height: '36px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: '#DC2626', borderColor: '#FEE2E2' }}
+              >
+                <X size={16} />
+              </button>
             )}
           </div>
         </div>
@@ -544,21 +591,36 @@ function App() {
             </div>
           ))
         ) : activeTab === 'lavorazione' ? (
-          filteredWorking.map(a => (
-            <div key={a.id} className="card clickable" onClick={() => openDetail(a.territory)}>
-              <h3 style={{ margin: '0 0 16px 0', fontSize: '18px' }}>{a.territory.country} <span style={{ color: 'var(--primary)' }}>#{a.territory.number}</span></h3>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-                <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'var(--primary-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' }}><User size={18} /></div>
-                <div>
-                  <div style={{ fontWeight: 600 }}>{a.assignee_name}</div>
-                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Dal {new Date(a.assignment_date).toLocaleDateString('it-IT')}</div>
+          filteredWorking.map(a => {
+            const expiry = getExpiryStatus(a.assignment_date);
+            return (
+              <div key={a.id} className="card clickable" onClick={() => openDetail(a.territory)} style={{ boxShadow: expiry.status === 'expired' ? 'inset 3px 0 0 #DC2626, var(--shadow-sm)' : expiry.status === 'expiring' ? 'inset 3px 0 0 #F59E0B, var(--shadow-sm)' : undefined }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                  <h3 style={{ margin: 0, fontSize: '18px' }}>{a.territory.country} <span style={{ color: 'var(--primary)' }}>#{a.territory.number}</span></h3>
+                  {expiry.status === 'expired' && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', fontWeight: 600, color: '#DC2626', background: '#FEF2F2', padding: '4px 8px', borderRadius: '6px', whiteSpace: 'nowrap' }}>
+                      <AlertOctagon size={13} /> Scaduto da {Math.abs(expiry.daysLeft)}g
+                    </div>
+                  )}
+                  {expiry.status === 'expiring' && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', fontWeight: 600, color: '#92400E', background: '#FEF3C7', padding: '4px 8px', borderRadius: '6px', whiteSpace: 'nowrap' }}>
+                      <AlertTriangle size={13} /> Scade tra {expiry.daysLeft}g
+                    </div>
+                  )}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'var(--primary-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' }}><User size={18} /></div>
+                  <div>
+                    <div style={{ fontWeight: 600 }}>{a.assignee_name}</div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Dal {new Date(a.assignment_date).toLocaleDateString('it-IT')}</div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <button className="btn btn-secondary clickable" style={{ color: '#DC2626', borderColor: '#FEE2E2' }} onClick={(e) => { e.stopPropagation(); setSelectedTerritory(a.territory); setShowReturnModal(true); }}>Riconsegna</button>
                 </div>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <button className="btn btn-secondary clickable" style={{ color: '#DC2626', borderColor: '#FEE2E2' }} onClick={(e) => { e.stopPropagation(); setSelectedTerritory(a.territory); setShowReturnModal(true); }}>Riconsegna</button>
-              </div>
-            </div>
-          ))
+            );
+          })
         ) : (
           <>
             {filteredReturned.map(t => {
