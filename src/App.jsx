@@ -236,6 +236,22 @@ function App() {
   const handleAssign = async () => {
     if (!selectedTerritory || !selectedAssignee) return;
 
+    // Re-check availability from DB to prevent double assignment
+    const { data: freshTerritory } = await supabase
+      .from('territori')
+      .select('is_available')
+      .eq('id', selectedTerritory.id)
+      .single();
+
+    if (!freshTerritory || !freshTerritory.is_available) {
+      alert('⚠️ Questo territorio è già stato assegnato da un altro utente.');
+      fetchData(); // Refresh local data
+      setShowAssignModal(false);
+      setSelectedTerritory(null);
+      setSelectedAssignee('');
+      return;
+    }
+
     const newAssignment = {
       territory_id: selectedTerritory.id,
       assignee_name: selectedAssignee,
