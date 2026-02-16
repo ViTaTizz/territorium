@@ -903,9 +903,9 @@ function StatsView({ territori, assignments, onClose }) {
       finished,
       todo,
       chartData: [
-        { name: 'Assegnati', value: working.length, color: 'var(--primary)', key: 'working', icon: <User size={16} /> },
-        { name: 'Rientrati', value: finished.length, color: '#10B981', key: 'finished', icon: <CheckCircle size={16} /> },
-        { name: 'Da assegnare', value: todo.length, color: '#F59E0B', key: 'todo', icon: <MapIcon size={16} /> }
+        { name: 'Iniziati', value: working.length, color: 'var(--primary)', key: 'working', icon: <User size={16} /> },
+        { name: 'Completati', value: finished.length, color: '#10B981', key: 'finished', icon: <CheckCircle size={16} /> },
+        { name: 'Non iniziati', value: todo.length, color: '#F59E0B', key: 'todo', icon: <MapIcon size={16} /> }
       ]
     };
   }, [territori, startDate, endDate, assignments]);
@@ -1055,9 +1055,9 @@ function StatsView({ territori, assignments, onClose }) {
               <div style={{ fontSize: '11px' }}>
                 <strong>{startDate && endDate ? `Periodo: ${new Date(startDate).toLocaleDateString('it-IT')} — ${new Date(endDate).toLocaleDateString('it-IT')}` : 'Ciclo Standard (ultimi 4 mesi)'}</strong>
                 <div style={{ opacity: 0.8, marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                  <span><strong style={{ color: 'var(--primary)' }}>In Lavorazione</strong> — territori attualmente assegnati e non ancora riconsegnati.</span>
-                  <span><strong style={{ color: '#10B981' }}>Rientrati</strong> — territori riconsegnati nel periodo selezionato.</span>
-                  <span><strong style={{ color: '#F59E0B' }}>Da assegnare</strong> — tutti i territori non assegnati nel periodo selezionato.</span>
+                  <span><strong style={{ color: 'var(--primary)' }}>Iniziati</strong> — territori attualmente assegnati e non ancora riconsegnati.</span>
+                  <span><strong style={{ color: '#10B981' }}>Completati</strong> — territori riconsegnati nel periodo selezionato.</span>
+                  <span><strong style={{ color: '#F59E0B' }}>Non iniziati</strong> — tutti i territori non assegnati nel periodo selezionato.</span>
                 </div>
               </div>
             </div>
@@ -1089,9 +1089,9 @@ function StatsView({ territori, assignments, onClose }) {
                     <strong style={{ fontSize: '12px' }}>{startDate && endDate ? `${new Date(startDate).toLocaleDateString('it-IT')} — ${new Date(endDate).toLocaleDateString('it-IT')}` : 'Ultimi 4 mesi'}</strong>
                     <X size={14} className="clickable" onClick={() => setShowLegend(false)} style={{ color: 'var(--text-muted)' }} />
                   </div>
-                  <span><strong>In Lavorazione</strong> — assegnati e non riconsegnati.</span>
-                  <span><strong style={{ color: '#10B981' }}>Rientrati</strong> — riconsegnati nel periodo.</span>
-                  <span><strong style={{ color: '#F59E0B' }}>Da assegnare</strong> — non assegnati nel periodo.</span>
+                  <span><strong>Iniziati</strong> — assegnati e non riconsegnati.</span>
+                  <span><strong style={{ color: '#10B981' }}>Completati</strong> — riconsegnati nel periodo.</span>
+                  <span><strong style={{ color: '#F59E0B' }}>Non iniziati</strong> — non assegnati nel periodo.</span>
                 </div>
               )}
             </div>
