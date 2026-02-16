@@ -925,7 +925,7 @@ function StatsView({ territori, assignments, onClose }) {
             {/* Desktop: always visible date picker */}
             <div className="date-filter-desktop" style={{ marginBottom: '24px', padding: '16px', background: 'var(--bg-app)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', gap: '12px', flexShrink: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                <Calendar size={14} /> Periodo di riferimento
+                <Calendar size={14} /> Periodo di riferimento <span style={{ fontWeight: 400, color: 'var(--text-muted)' }}>(Default: ultimi 4 mesi)</span>
               </div>
               <div className="campaign-date-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div>
