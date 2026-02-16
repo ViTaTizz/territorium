@@ -22,7 +22,9 @@ import {
   Info,
   AlertTriangle,
   AlertOctagon,
-  TrendingUp
+  TrendingUp,
+  ClipboardList,
+  CheckSquare
 } from 'lucide-react';
 import { PieChart as RePieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
@@ -234,6 +236,7 @@ function App() {
   const [customDate, setCustomDate] = useState(new Date().toISOString().split('T')[0]);
   const [showStats, setShowStats] = useState(false);
   const [showPercorrenza, setShowPercorrenza] = useState(false);
+  const [showS13Queue, setShowS13Queue] = useState(false);
 
   const fetchData = useCallback(async () => {
     if (!user) return;
@@ -384,7 +387,9 @@ function App() {
       territory_id: selectedTerritory.id,
       assignee_name: selectedAssignee,
       assignment_date: customDate,
-      is_completed: false
+      is_completed: false,
+      s13_assign_marked: false,
+      s13_return_marked: false
     };
 
     const { data, error: aError } = await supabase.from('assegnazioni').insert([newAssignment]).select();
@@ -416,7 +421,8 @@ function App() {
     if (activeAssignment) {
       const { error: aError } = await supabase.from('assegnazioni').update({
         return_date: customDate,
-        is_completed: true
+        is_completed: true,
+        s13_return_marked: false
       }).eq('id', activeAssignment.id);
 
       if (aError) { alert(aError.message); return; }
@@ -475,11 +481,26 @@ function App() {
     }
   };
 
+  const updateS13Status = async (assignmentId, type) => {
+    const updateField = type === 'assign' ? { s13_assign_marked: true } : { s13_return_marked: true };
+    const { error } = await supabase.from('assegnazioni').update(updateField).eq('id', assignmentId);
+
+    if (error) {
+      alert('Errore aggiornamento: ' + error.message);
+    } else {
+      setAssignments(prev => prev.map(a => a.id === assignmentId ? { ...a, ...updateField } : a));
+    }
+  };
+
   const openDetail = (t) => {
     setSelectedTerritory(t);
     setEditNotes(t.notes || '');
     setShowDetailModal(true);
   };
+
+  const pendingS13Count = useMemo(() => {
+    return assignments.filter(a => a.s13_assign_marked === false || (a.return_date && a.s13_return_marked === false)).length;
+  }, [assignments]);
 
   if (!user) return <Login />;
 
@@ -498,6 +519,14 @@ function App() {
             Territorium
           </h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+            <button className="btn btn-secondary clickable" onClick={() => setShowS13Queue(!showS13Queue)} title="Coda S-13" style={{ width: '34px', height: '34px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', borderColor: showS13Queue ? 'var(--primary)' : 'var(--border-medium)', color: showS13Queue ? 'var(--primary)' : 'inherit' }}>
+              <ClipboardList size={16} />
+              {pendingS13Count > 0 && (
+                <div style={{ position: 'absolute', top: '-5px', right: '-5px', background: '#EF4444', color: 'white', fontSize: '10px', fontWeight: 800, minWidth: '16px', height: '16px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid white', lineHeight: 1 }}>
+                  {pendingS13Count}
+                </div>
+              )}
+            </button>
             <button className="btn btn-secondary clickable" onClick={() => setShowStats(!showStats)} title="Statistiche" style={{ width: '34px', height: '34px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: showStats ? 'var(--primary)' : 'inherit', borderColor: showStats ? 'var(--primary)' : 'var(--border-medium)' }}>
               <PieChartIcon size={16} />
             </button>
@@ -766,6 +795,25 @@ function App() {
           />
         )
       }
+
+
+
+      {showPercorrenza && (
+        <PercorrenzaView
+          territori={territori}
+          assignments={assignments}
+          onClose={() => setShowPercorrenza(false)}
+        />
+      )}
+
+      {showS13Queue && (
+        <S13QueueModal
+          assignments={assignments}
+          territori={territori}
+          onClose={() => setShowS13Queue(false)}
+          onUpdateStatus={updateS13Status}
+        />
+      )}
     </div >
   );
 }
@@ -1076,7 +1124,18 @@ function StatsView({ territori, assignments, onClose }) {
           </div>
         )}
       </div>
-    </div>
+
+
+
+
+
+
+
+
+
+
+
+    </div >
   );
 }
 
@@ -1261,6 +1320,101 @@ function PercorrenzaView({ territori, assignments, onClose }) {
                 </button>
               </div>
             </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function S13QueueModal({ assignments, territori, onClose, onUpdateStatus }) {
+  // Filter items that need S-13 update
+  const toAssign = assignments.filter(a => a.s13_assign_marked === false);
+  const toReturn = assignments.filter(a => a.return_date && a.s13_return_marked === false);
+
+  const getTerritoryName = (id) => {
+    const t = territori.find(t => t.id === id);
+    return t ? `${t.country} #${t.number}` : 'Territorio sconosciuto';
+  };
+
+  const hasItems = toAssign.length > 0 || toReturn.length > 0;
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+          <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <ClipboardList size={24} color="var(--primary)" />
+            Coda S-13
+          </h2>
+          <button className="btn btn-secondary clickable" onClick={onClose}>
+            <X size={20} />
+          </button>
+        </div>
+
+        {!hasItems ? (
+          <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)' }}>
+            <CheckSquare size={48} style={{ marginBottom: '16px', opacity: 0.2 }} />
+            <p>Tutto aggiornato! Nessuna trascrizione in sospeso.</p>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', maxHeight: '60vh', overflowY: 'auto' }}>
+
+            {/* Uscite da segnare */}
+            {toAssign.length > 0 && (
+              <div>
+                <h3 style={{ fontSize: '14px', color: 'var(--primary)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <User size={16} /> DA SEGNARE USCITE ({toAssign.length})
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {toAssign.map(a => (
+                    <div key={a.id} className="card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px' }}>
+                      <div>
+                        <div style={{ fontWeight: 600 }}>{getTerritoryName(a.territory_id)}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                          Assegnato a <strong>{a.assignee_name}</strong> il {new Date(a.assignment_date).toLocaleDateString('it-IT')}
+                        </div>
+                      </div>
+                      <button
+                        className="btn btn-primary clickable"
+                        onClick={() => onUpdateStatus(a.id, 'assign')}
+                        style={{ padding: '6px 12px', fontSize: '12px', height: 'auto' }}
+                      >
+                        Fatto
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Rientri da segnare */}
+            {toReturn.length > 0 && (
+              <div>
+                <h3 style={{ fontSize: '14px', color: '#10B981', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <CheckCircle size={16} /> DA SEGNARE RIENTRI ({toReturn.length})
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {toReturn.map(a => (
+                    <div key={a.id} className="card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px', borderLeft: '4px solid #10B981' }}>
+                      <div>
+                        <div style={{ fontWeight: 600 }}>{getTerritoryName(a.territory_id)}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                          Rientrato il {new Date(a.return_date).toLocaleDateString('it-IT')}
+                        </div>
+                      </div>
+                      <button
+                        className="btn clickable"
+                        onClick={() => onUpdateStatus(a.id, 'return')}
+                        style={{ padding: '6px 12px', fontSize: '12px', height: 'auto', background: '#10B981', color: 'white', border: 'none' }}
+                      >
+                        Fatto
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
