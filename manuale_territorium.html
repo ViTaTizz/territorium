@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Manuale Utente — Territorium</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            color: #1e293b;
+            line-height: 1.7;
+            background: #fff;
+            font-size: 14px;
+        }
+
+        @page {
+            size: A4;
+            margin: 20mm 18mm;
+        }
+
+        @media print {
+            body {
+                font-size: 11pt;
+            }
+
+            .page-break {
+                page-break-before: always;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+
+        /* Cover page */
+        .cover {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #0f172a 100%);
+            color: white;
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .cover-icon {
+            width: 96px;
+            height: 96px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+            font-size: 48px;
+        }
+
+        .cover h1 {
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 8px;
+        }
+
+        .cover .subtitle {
+            font-size: 18px;
+            color: #94a3b8;
+            margin-bottom: 48px;
+        }
+
+        .cover .meta {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 60px;
+        }
+
+        .cover .version {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            margin-top: 16px;
+        }
+
+        /* Content area */
+        .content {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 40px 32px;
+        }
+
+        /* TOC */
+        .toc {
+            margin: 20px 0 40px;
+        }
+
+        .toc h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #0f172a;
+        }
+
+        .toc-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #e2e8f0;
+            font-size: 15px;
+        }
+
+        .toc-item a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .toc-item span {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        /* Sections */
+        h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 48px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #2563eb;
+        }
+
+        h3 {
+            font-size: 17px;
+            font-weight: 600;
+            color: #334155;
+            margin: 28px 0 12px;
+        }
+
+        h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #475569;
+            margin: 20px 0 8px;
+        }
+
+        p {
+            margin-bottom: 12px;
+            color: #334155;
+        }
+
+        /* Lists */
+        ol,
+        ul {
+            margin: 8px 0 16px 24px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        /* Info boxes */
+        .info-box {
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin: 16px 0;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .info-box.tip {
+            background: #f0fdf4;
+            border-left: 4px solid #22c55e;
+        }
+
+        .info-box.warning {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .info-box.important {
+            background: #eff6ff;
+            border-left: 4px solid #2563eb;
+        }
+
+        .info-box .icon {
+            font-size: 20px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .info-box .text {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* Steps */
+        .step {
+            display: flex;
+            gap: 16px;
+            margin: 16px 0;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .step-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-content strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #0f172a;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 13px;
+        }
+
+        th,
+        td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-blue {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .badge-green {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        .badge-yellow {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-red {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .badge-orange {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        /* Keyboard shortcut */
+        kbd {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: #f1f5f9;
+            border: 1px solid #d1d5db;
+            font-size: 12px;
+            font-family: monospace;
+            color: #374151;
+        }
+
+        /* Screenshot placeholder */
+        .screenshot {
+            background: #f1f5f9;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin: 16px 0;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #94a3b8;
+            font-size: 12px;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ═══════════════ COVER PAGE ═══════════════ -->
+    <div class="cover">
+        <div class="cover-icon">🗺️</div>
+        <h1>Territorium</h1>
+        <p class="subtitle">Manuale Utente</p>
+        <p class="meta">
+            Gestione Territori e Assegnazioni<br>
+            <span class="version">v1.0 — Febbraio 2026</span>
+        </p>
+    </div>
+
+    <!-- ═══════════════ TABLE OF CONTENTS ═══════════════ -->
+    <div class="content page-break">
+        <div class="toc">
+            <h2>📑 Indice</h2>
+            <div class="toc-item"><a href="#cap1">1. Installazione dell'App</a></div>
+            <div class="toc-item"><a href="#cap2">2. Accesso (Login)</a></div>
+            <div class="toc-item"><a href="#cap3">3. Panoramica dell'Interfaccia</a></div>
+            <div class="toc-item"><a href="#cap4">4. Tab Disponibili</a></div>
+            <div class="toc-item"><a href="#cap5">5. Tab In Lavorazione</a></div>
+            <div class="toc-item"><a href="#cap6">6. Tab Rientri</a></div>
+            <div class="toc-item"><a href="#cap7">7. Assegnare un Territorio</a></div>
+            <div class="toc-item"><a href="#cap8">8. Riconsegnare un Territorio</a></div>
+            <div class="toc-item"><a href="#cap9">9. Dettaglio Territorio e Note</a></div>
+            <div class="toc-item"><a href="#cap10">10. Filtri e Ricerca</a></div>
+            <div class="toc-item"><a href="#cap11">11. Avvisi di Scadenza</a></div>
+            <div class="toc-item"><a href="#cap12">12. Statistiche (Stato Copertura)</a></div>
+            <div class="toc-item"><a href="#cap13">13. Aggiungere un Nuovo Territorio</a></div>
+            <div class="toc-item"><a href="#cap14">14. Sessione e Sicurezza</a></div>
+            <div class="toc-item"><a href="#cap15">15. Domande Frequenti (FAQ)</a></div>
+        </div>
+
+        <!-- ═══════════════ 1. INSTALLAZIONE ═══════════════ -->
+        <h2 id="cap1">1. Installazione dell'App</h2>
+        <p>Territorium è una <strong>Progressive Web App (PWA)</strong>. Non è necessario scaricarla da alcun app store:
+            si installa direttamente dal browser e funziona come un'app nativa.</p>
+
+        <h3>📱 Su Smartphone Android (Chrome)</h3>
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <strong>Apri Chrome</strong>
+                Naviga all'indirizzo dell'app fornito dall'amministratore.
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <strong>Tocca il banner di installazione</strong>
+                Apparirà un banner in basso con scritto "Aggiungi Territorium alla schermata Home". Tocca
+                <strong>"Installa"</strong>.
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <strong>Alternativa: Menu manuale</strong>
+                Se il banner non appare, tocca i <strong>tre puntini</strong> (⋮) in alto a destra → <strong>"Installa
+                    app"</strong> o <strong>"Aggiungi a schermata Home"</strong>.
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+                <strong>Fatto!</strong>
+                L'icona di Territorium apparirà nella schermata Home. Puoi aprirla come qualsiasi altra app.
+            </div>
+        </div>
+
+        <h3>🍎 Su iPhone / iPad (Safari)</h3>
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <strong>Apri Safari</strong>
+                Naviga all'indirizzo dell'app. <em>Importante: su iOS funziona solo con Safari.</em>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <strong>Tocca il pulsante Condividi</strong>
+                È l'icona con il quadrato e la freccia verso l'alto (⬆️), nella barra in basso.
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <strong>Scorri e tocca "Aggiungi a Home"</strong>
+                Conferma il nome e tocca <strong>"Aggiungi"</strong>.
+            </div>
+        </div>
+
+        <h3>💻 Su Computer (Chrome / Edge)</h3>
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <strong>Naviga all'indirizzo dell'app</strong>
+                Nella barra degli indirizzi apparirà un'icona di installazione (📥). Cliccala e conferma.
+            </div>
+        </div>
+
+        <div class="info-box tip">
+            <div class="icon">💡</div>
+            <div class="text">Una volta installata, l'app si apre in una finestra dedicata senza la barra degli
+                indirizzi del browser, proprio come un'app nativa.</div>
+        </div>
+
+        <!-- ═══════════════ 2. LOGIN ═══════════════ -->
+        <h2 id="cap2" class="page-break">2. Accesso (Login)</h2>
+        <p>All'avvio, Territorium presenta una schermata di login.</p>
+
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <strong>Inserisci l'Email</strong>
+                L'indirizzo email associato al tuo account.
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <strong>Inserisci la Password</strong>
+                La password fornita dall'amministratore.
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <strong>Tocca "Accedi"</strong>
+                Se le credenziali sono corrette, verrai portato alla schermata principale.
+            </div>
+        </div>
+
+        <div class="info-box warning">
+            <div class="icon">⚠️</div>
+            <div class="text"><strong>Sicurezza:</strong> La sessione si chiude automaticamente dopo <strong>30 minuti
+                    di inattività</strong> o quando chiudi il browser/l'app. Dovrai effettuare nuovamente l'accesso.
+            </div>
+        </div>
+
+        <!-- ═══════════════ 3. PANORAMICA ═══════════════ -->
+        <h2 id="cap3" class="page-break">3. Panoramica dell'Interfaccia</h2>
+        <p>La schermata principale è composta da:</p>
+
+        <table>
+            <tr>
+                <th>Elemento</th>
+                <th>Descrizione</th>
+            </tr>
+            <tr>
+                <td><strong>Header</strong></td>
+                <td>Logo "Territorium" con tre pulsanti: Statistiche (📊), Ricarica (🔄), Esci (➡️)</td>
+            </tr>
+            <tr>
+                <td><strong>Tab di navigazione</strong></td>
+                <td>Tre schede: <strong>Disponibili</strong>, <strong>In Lavorazione</strong>, <strong>Rientri</strong>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Barra ricerca</strong></td>
+                <td>Cerca territori per nome, numero o incaricato</td>
+            </tr>
+            <tr>
+                <td><strong>Filtri</strong></td>
+                <td>Dropdown per filtrare per Paese, Tipo, Incaricato, Scadenza (variano per tab)</td>
+            </tr>
+            <tr>
+                <td><strong>Elenco card</strong></td>
+                <td>Le carte dei territori, con informazioni e azioni rapide</td>
+            </tr>
+            <tr>
+                <td><strong>Pulsante +</strong></td>
+                <td>In basso a destra, per aggiungere un nuovo territorio</td>
+            </tr>
+        </table>
+
+        <!-- ═══════════════ 4. TAB DISPONIBILI ═══════════════ -->
+        <h2 id="cap4">4. Tab "Disponibili"</h2>
+        <p>Mostra tutti i territori <strong>attualmente disponibili</strong> per essere assegnati. I territori sono
+            ordinati dal meno recente (riconsegnato prima) al più recente.</p>
+
+        <h4>Ogni card mostra:</h4>
+        <ul>
+            <li><strong>Paese e Numero</strong> — Es: "Santhià <span style="color:#2563eb">#15</span>"</li>
+            <li><strong>Tipo</strong> — Badge "Ordinario" o "Commerciale"</li>
+            <li><strong>Data ultimo rientro</strong> — "Riconsegnato il gg/mm/aaaa"</li>
+            <li><strong>Pulsante "Assegna"</strong> — Per assegnare il territorio</li>
+            <li><strong>Avviso "Da non visitare"</strong> — Se il territorio ha note particolari (in rosso)</li>
+        </ul>
+
+        <h4>Filtri disponibili:</h4>
+        <ul>
+            <li><strong>Paese</strong> — Filtra per località</li>
+            <li><strong>Tipo</strong> — Filtra per Ordinario/Commerciale</li>
+        </ul>
+
+        <!-- ═══════════════ 5. TAB IN LAVORAZIONE ═══════════════ -->
+        <h2 id="cap5" class="page-break">5. Tab "In Lavorazione"</h2>
+        <p>Mostra tutti i territori <strong>attualmente assegnati</strong> a qualcuno e non ancora riconsegnati.</p>
+
+        <h4>Ogni card mostra:</h4>
+        <ul>
+            <li><strong>Paese e Numero</strong> del territorio</li>
+            <li><strong>Nome incaricato</strong> — Chi ha il territorio</li>
+            <li><strong>Data assegnazione</strong> — "Dal gg/mm/aaaa"</li>
+            <li><strong>Badge scadenza</strong> — Se applicabile (vedi capitolo 11)</li>
+            <li><strong>Pulsante "Riconsegna"</strong> — Per registrare il rientro</li>
+        </ul>
+
+        <h4>Filtri disponibili:</h4>
+        <ul>
+            <li><strong>Paese</strong> — Filtra per località</li>
+            <li><strong>Incaricato</strong> — Filtra per nome della persona assegnata</li>
+            <li><strong>Scadenza</strong> — Filtra per stato di scadenza (vedi capitolo 11)</li>
+        </ul>
+
+        <!-- ═══════════════ 6. TAB RIENTRI ═══════════════ -->
+        <h2 id="cap6">6. Tab "Rientri"</h2>
+        <p>Mostra i territori <strong>già riconsegnati</strong>, con lo storico delle assegnazioni.</p>
+
+        <h4>Ogni card mostra:</h4>
+        <ul>
+            <li><strong>Paese e Numero</strong> del territorio</li>
+            <li><strong>Ultimo incaricato</strong> e <strong>data rientro</strong></li>
+            <li><strong>Tipo</strong> del territorio</li>
+        </ul>
+
+        <h4>Filtri disponibili:</h4>
+        <ul>
+            <li><strong>Date "Dal" / "Al"</strong> — Filtra per intervallo di date di rientro</li>
+        </ul>
+
+        <!-- ═══════════════ 7. ASSEGNARE ═══════════════ -->
+        <h2 id="cap7" class="page-break">7. Assegnare un Territorio</h2>
+
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <strong>Vai su "Disponibili"</strong>
+                Trova il territorio che vuoi assegnare.
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <strong>Tocca "Assegna"</strong>
+                Si aprirà il pannello di assegnazione.
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <strong>Seleziona l'incaricato</strong>
+                Scegli dal menu a tendina la persona a cui assegnare il territorio.
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+                <strong>Imposta la data</strong>
+                La data è impostata automaticamente a oggi, ma puoi modificarla se necessario.
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-content">
+                <strong>Conferma</strong>
+                Il territorio si sposterà nella tab "In Lavorazione".
+            </div>
+        </div>
+
+        <div class="info-box important">
+            <div class="icon">🔒</div>
+            <div class="text"><strong>Anti doppia assegnazione:</strong> Il sistema verifica in tempo reale che il
+                territorio sia ancora disponibile prima di confermare. Se un altro utente lo ha già assegnato, riceverai
+                un avviso.</div>
+        </div>
+
+        <!-- ═══════════════ 8. RICONSEGNARE ═══════════════ -->
+        <h2 id="cap8">8. Riconsegnare un Territorio</h2>
+
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <strong>Vai su "In Lavorazione"</strong>
+                Trova il territorio da riconsegnare.
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <strong>Tocca "Riconsegna"</strong>
+                Si aprirà il pannello di riconsegna con la data di oggi.
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <strong>Modifica la data se necessario</strong>
+                Puoi cambiare la data di rientro.
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+                <strong>Conferma</strong>
+                Il territorio tornerà nella tab "Disponibili" e apparirà nei "Rientri".
+            </div>
+        </div>
+
+        <!-- ═══════════════ 9. DETTAGLIO ═══════════════ -->
+        <h2 id="cap9" class="page-break">9. Dettaglio Territorio e Note</h2>
+        <p>Tocca su qualsiasi carta territorio per aprire il <strong>pannello dettaglio</strong>.</p>
+
+        <h4>Informazioni visualizzate:</h4>
+        <ul>
+            <li><strong>Paese e Numero</strong></li>
+            <li><strong>Tipo</strong> (Ordinario / Commerciale)</li>
+            <li><strong>Stato</strong> (Disponibile / Assegnato)</li>
+            <li><strong>Incaricato attuale</strong> e data assegnazione (se assegnato)</li>
+        </ul>
+
+        <h4>Campo "Note":</h4>
+        <p>Puoi inserire o modificare note particolari per il territorio (es. istruzioni, avvertenze). Tocca
+            <strong>"Salva Note"</strong> per confermare.</p>
+
+        <div class="info-box tip">
+            <div class="icon">📝</div>
+            <div class="text">I territori con note attive mostrano un avviso "Da non visitare" nella card della tab
+                Disponibili.</div>
+        </div>
+
+        <!-- ═══════════════ 10. FILTRI ═══════════════ -->
+        <h2 id="cap10">10. Filtri e Ricerca</h2>
+
+        <h4>Barra di ricerca</h4>
+        <p>Digita per filtrare in tempo reale per nome del paese, numero del territorio, o nome dell'incaricato.</p>
+
+        <h4>Filtri dropdown</h4>
+        <p>I filtri variano in base alla tab attiva:</p>
+        <table>
+            <tr>
+                <th>Tab</th>
+                <th>Filtri disponibili</th>
+            </tr>
+            <tr>
+                <td>Disponibili</td>
+                <td>Paese, Tipo</td>
+            </tr>
+            <tr>
+                <td>In Lavorazione</td>
+                <td>Paese, Incaricato, Scadenza</td>
+            </tr>
+            <tr>
+                <td>Rientri</td>
+                <td>Intervallo date (Dal / Al)</td>
+            </tr>
+        </table>
+
+        <h4>Pulsante Reset (✕)</h4>
+        <p>Quando almeno un filtro è attivo, appare un <strong>pulsante rosso ✕</strong> per resettare tutti i filtri e
+            la barra di ricerca in un solo tocco.</p>
+
+        <!-- ═══════════════ 11. SCADENZE ═══════════════ -->
+        <h2 id="cap11" class="page-break">11. Avvisi di Scadenza</h2>
+        <p>Il sistema monitora automaticamente da quanto tempo ogni territorio è assegnato. Il ciclo standard è di
+            <strong>4 mesi</strong>.</p>
+
+        <table>
+            <tr>
+                <th>Stato</th>
+                <th>Condizione</th>
+                <th>Indicatore visivo</th>
+            </tr>
+            <tr>
+                <td>✅ Regolare</td>
+                <td>Meno di 3 mesi e mezzo</td>
+                <td>Nessun indicatore</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-yellow">⚠️ In scadenza</span></td>
+                <td>Mancano meno di 2 settimane ai 4 mesi</td>
+                <td>Badge giallo + bordo sinistro giallo<br>"Scade tra Xg"</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-red">🛑 Scaduto</span></td>
+                <td>Superati i 4 mesi</td>
+                <td>Badge rosso + bordo sinistro rosso<br>"Scaduto da Xg"</td>
+            </tr>
+        </table>
+
+        <h4>Filtro Scadenza</h4>
+        <p>Nella tab "In Lavorazione", il dropdown <strong>"Scadenza"</strong> permette di visualizzare:</p>
+        <ul>
+            <li><strong>Tutti</strong> — Nessun filtro (default)</li>
+            <li><strong>⚠️ In scadenza + Scaduti</strong> — Mostra entrambe le categorie</li>
+            <li><strong>🟡 In scadenza</strong> — Solo quelli prossimi alla scadenza</li>
+            <li><strong>🔴 Scaduti</strong> — Solo quelli oltre i 4 mesi</li>
+        </ul>
+
+        <!-- ═══════════════ 12. STATISTICHE ═══════════════ -->
+        <h2 id="cap12" class="page-break">12. Statistiche (Stato Copertura)</h2>
+        <p>Tocca l'icona <strong>📊</strong> nell'header per aprire il pannello statistiche.</p>
+
+        <h4>Grafico a torta</h4>
+        <p>Mostra visivamente la distribuzione dei territori in tre categorie:</p>
+
+        <table>
+            <tr>
+                <th>Categoria</th>
+                <th style="color:#2563eb">Colore</th>
+                <th>Significato</th>
+            </tr>
+            <tr>
+                <td><strong>In Lavorazione</strong></td>
+                <td><span class="badge badge-blue">🔵 Blu</span></td>
+                <td>Territori attualmente assegnati e non riconsegnati</td>
+            </tr>
+            <tr>
+                <td><strong>Rientrati</strong></td>
+                <td><span class="badge badge-green">🟢 Verde</span></td>
+                <td>Territori riconsegnati nel periodo selezionato</td>
+            </tr>
+            <tr>
+                <td><strong>Da assegnare</strong></td>
+                <td><span class="badge badge-orange">🟠 Arancione</span></td>
+                <td>Territori che non si sono mossi nel periodo selezionato</td>
+            </tr>
+        </table>
+
+        <h4>Periodo di riferimento</h4>
+        <p>Di default vengono considerati gli <strong>ultimi 4 mesi</strong>. Puoi personalizzare il periodo usando i
+            campi data <strong>"Dal"</strong> e <strong>"Al"</strong>.</p>
+
+        <h4>Dettaglio per categoria</h4>
+        <p>Tocca una delle tre card (In Lavorazione, Rientrati, Da assegnare) per vedere l'elenco dettagliato dei
+            territori in quella categoria. Tocca la freccia indietro per tornare alla vista generale.</p>
+
+        <div class="info-box important">
+            <div class="icon">📊</div>
+            <div class="text">La somma delle tre categorie è sempre uguale al <strong>numero totale dei
+                    territori</strong>. Non ci sono sovrapposizioni.</div>
+        </div>
+
+        <!-- ═══════════════ 13. AGGIUNGERE ═══════════════ -->
+        <h2 id="cap13">13. Aggiungere un Nuovo Territorio</h2>
+
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <strong>Tocca il pulsante "+"</strong>
+                Si trova in basso a destra nella schermata principale.
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <strong>Compila i campi</strong>
+                Inserisci il Paese, il Numero del territorio e seleziona il Tipo (Ordinario o Commerciale).
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <strong>Conferma</strong>
+                Il nuovo territorio verrà aggiunto alla lista dei Disponibili.
+            </div>
+        </div>
+
+        <!-- ═══════════════ 14. SICUREZZA ═══════════════ -->
+        <h2 id="cap14" class="page-break">14. Sessione e Sicurezza</h2>
+
+        <table>
+            <tr>
+                <th>Funzionalità</th>
+                <th>Descrizione</th>
+            </tr>
+            <tr>
+                <td><strong>Logout automatico per inattività</strong></td>
+                <td>Dopo 30 minuti senza interazioni, verrai disconnesso automaticamente</td>
+            </tr>
+            <tr>
+                <td><strong>Sessione temporanea</strong></td>
+                <td>La sessione si cancella quando chiudi il browser o l'app</td>
+            </tr>
+            <tr>
+                <td><strong>Logout manuale</strong></td>
+                <td>Tocca l'icona ➡️ nell'header per uscire</td>
+            </tr>
+            <tr>
+                <td><strong>Aggiornamento in tempo reale</strong></td>
+                <td>I dati si aggiornano automaticamente quando un altro utente fa modifiche</td>
+            </tr>
+            <tr>
+                <td><strong>Protezione doppia assegnazione</strong></td>
+                <td>Il sistema verifica la disponibilità prima di ogni assegnazione</td>
+            </tr>
+        </table>
+
+        <div class="info-box warning">
+            <div class="icon">🔐</div>
+            <div class="text">Non condividere le tue credenziali. Se ritieni che qualcuno abbia accesso al tuo account,
+                contatta immediatamente l'amministratore.</div>
+        </div>
+
+        <!-- ═══════════════ 15. FAQ ═══════════════ -->
+        <h2 id="cap15">15. Domande Frequenti (FAQ)</h2>
+
+        <h4>L'app non si installa, cosa faccio?</h4>
+        <p>Assicurati di usare <strong>Chrome</strong> su Android o <strong>Safari</strong> su iPhone. Altri browser
+            (Firefox, Opera) potrebbero non supportare l'installazione PWA.</p>
+
+        <h4>Vedo ancora un territorio come "Disponibile" dopo averlo assegnato</h4>
+        <p>Tocca il pulsante <strong>Ricarica (🔄)</strong> nell'header. I dati verranno risincronizzati dal server.</p>
+
+        <h4>Mi sono scordato la password</h4>
+        <p>Contatta l'amministratore per un reset della password.</p>
+
+        <h4>Posso usare l'app offline?</h4>
+        <p>L'app ha un supporto base per l'offline (le pagine già visitate restano in cache), ma per le operazioni
+            (assegnazioni, riconsegne) è necessaria una connessione internet attiva.</p>
+
+        <h4>Come resetto tutti i filtri?</h4>
+        <p>Quando un filtro è attivo, appare un <strong>pulsante rosso ✕</strong> nella barra filtri. Toccalo per
+            resettare tutto.</p>
+
+        <h4>Cosa significano i badge gialli e rossi sulle card?</h4>
+        <p>Indicano che il territorio è vicino alla scadenza dei 4 mesi (<span class="badge badge-yellow">giallo</span>)
+            o ha già superato i 4 mesi (<span class="badge badge-red">rosso</span>). Vedi il capitolo 11 per i dettagli.
+        </p>
+
+        <h4>Posso eliminare un territorio?</h4>
+        <p>Questa funzionalità è stata disabilitata per sicurezza. Contatta l'amministratore se necessario.</p>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>© 2026 Territorium — Manuale Utente v1.0</p>
+            <p>Documento generato il 14 febbraio 2026</p>
+        </div>
+    </div>
+
+</body>
+
+</html>

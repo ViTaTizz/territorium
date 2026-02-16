@@ -21,7 +21,8 @@ import {
   PieChart as PieChartIcon,
   Info,
   AlertTriangle,
-  AlertOctagon
+  AlertOctagon,
+  TrendingUp
 } from 'lucide-react';
 import { PieChart as RePieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
@@ -232,6 +233,7 @@ function App() {
   const [selectedAssignee, setSelectedAssignee] = useState('');
   const [customDate, setCustomDate] = useState(new Date().toISOString().split('T')[0]);
   const [showStats, setShowStats] = useState(false);
+  const [showPercorrenza, setShowPercorrenza] = useState(false);
 
   const fetchData = useCallback(async () => {
     if (!user) return;
@@ -490,19 +492,22 @@ function App() {
   return (
     <div className="app-container">
       <div className="sticky-top-area">
-        <header className="glass" style={{ padding: '20px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '12px', letterSpacing: '-0.5px' }}>
-            <MapIcon size={24} color="var(--primary)" />
+        <header className="glass" style={{ padding: '16px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
+          <h1 style={{ margin: 0, fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px', letterSpacing: '-0.5px', minWidth: 0, overflow: 'hidden', whiteSpace: 'nowrap' }}>
+            <MapIcon size={20} color="var(--primary)" style={{ flexShrink: 0 }} />
             Territorium
           </h1>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <button className="btn btn-secondary clickable" onClick={() => setShowStats(!showStats)} title="Statistiche" style={{ width: '40px', height: '40px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: showStats ? 'var(--primary)' : 'inherit', borderColor: showStats ? 'var(--primary)' : 'var(--border-medium)' }}>
-              <PieChartIcon size={18} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+            <button className="btn btn-secondary clickable" onClick={() => setShowStats(!showStats)} title="Statistiche" style={{ width: '34px', height: '34px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: showStats ? 'var(--primary)' : 'inherit', borderColor: showStats ? 'var(--primary)' : 'var(--border-medium)' }}>
+              <PieChartIcon size={16} />
             </button>
-            <button className="btn btn-secondary clickable" onClick={fetchData} title="Ricarica" style={{ width: '40px', height: '40px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <RefreshCw size={18} className={loading ? 'spin' : ''} />
+            <button className="btn btn-secondary clickable" onClick={() => setShowPercorrenza(!showPercorrenza)} title="Media Percorrenza" style={{ width: '34px', height: '34px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: showPercorrenza ? '#8b5cf6' : 'inherit', borderColor: showPercorrenza ? '#8b5cf6' : 'var(--border-medium)' }}>
+              <TrendingUp size={16} />
             </button>
-            <button className="btn btn-secondary clickable" onClick={signOut} title="Esci" style={{ width: '40px', height: '40px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <button className="btn btn-secondary clickable" onClick={fetchData} title="Ricarica" style={{ width: '34px', height: '34px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <RefreshCw size={16} className={loading ? 'spin' : ''} />
+            </button>
+            <button className="btn btn-secondary clickable" onClick={signOut} title="Esci" style={{ width: '34px', height: '34px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <LogOut size={18} />
             </button>
           </div>
@@ -572,6 +577,7 @@ function App() {
       </div>
 
       {showStats && <StatsView territori={territori} assignments={assignments} onClose={() => setShowStats(false)} />}
+      {showPercorrenza && <PercorrenzaView territori={territori} assignments={assignments} onClose={() => setShowPercorrenza(false)} />}
 
       <div className="content-container" style={{ display: 'grid', gap: '16px' }}>
         {activeTab === 'disponibili' ? (
@@ -771,6 +777,8 @@ function StatsView({ territori, assignments, onClose }) {
   const [showLegend, setShowLegend] = useState(false);
   const [showDateFilter, setShowDateFilter] = useState(false);
 
+
+
   const statsCore = useMemo(() => {
     let filteredTerritories = territori;
 
@@ -802,12 +810,13 @@ function StatsView({ territori, assignments, onClose }) {
       finished,
       todo,
       chartData: [
-        { name: 'In Lavorazione', value: working.length, color: 'var(--primary)', key: 'working', icon: <User size={16} /> },
+        { name: 'Assegnati', value: working.length, color: 'var(--primary)', key: 'working', icon: <User size={16} /> },
         { name: 'Rientrati', value: finished.length, color: '#10B981', key: 'finished', icon: <CheckCircle size={16} /> },
         { name: 'Da assegnare', value: todo.length, color: '#F59E0B', key: 'todo', icon: <MapIcon size={16} /> }
       ]
     };
   }, [territori, startDate, endDate, assignments]);
+
 
   const displayedTerritories = useMemo(() => {
     if (!selectedStatus) return [];
@@ -1018,6 +1027,7 @@ function StatsView({ territori, assignments, onClose }) {
                 </div>
               ))}
             </div>
+
           </div>
         ) : (
           <div style={{ flex: 1, overflowY: 'auto', paddingRight: '4px', animation: 'fadeIn 0.3s ease-out' }}>
@@ -1062,6 +1072,194 @@ function StatsView({ territori, assignments, onClose }) {
                   Nessun territorio in questa categoria per il periodo selezionato.
                 </div>
               )}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function PercorrenzaView({ territori, assignments, onClose }) {
+  const [coverageMode, setCoverageMode] = useState('6m');
+  const [coverageStart, setCoverageStart] = useState('');
+  const [coverageEnd, setCoverageEnd] = useState('');
+  const [showCalcInfo, setShowCalcInfo] = useState(false);
+
+  const stats = useMemo(() => {
+    const now = new Date();
+    let pStart, pEnd;
+
+    if (coverageMode === 'custom' && coverageStart && coverageEnd) {
+      pStart = new Date(coverageStart);
+      pEnd = new Date(coverageEnd);
+    } else {
+      pEnd = new Date(now);
+      pStart = new Date(now);
+      pStart.setMonth(pStart.getMonth() - 6);
+    }
+
+    const rientri = assignments.filter(a =>
+      a.is_completed &&
+      a.return_date &&
+      new Date(a.return_date) >= pStart &&
+      new Date(a.return_date) <= pEnd
+    ).length;
+
+    const totalTerritori = territori.length;
+    const diffMs = pEnd - pStart;
+    const mesiPeriodo = diffMs / (1000 * 60 * 60 * 24 * 30.44);
+    const denominatore = mesiPeriodo * totalTerritori;
+    const percorrenzaMesi = rientri > 0 ? denominatore / rientri : null;
+    const percorrenzaGiorni = percorrenzaMesi !== null ? percorrenzaMesi * 30 : null;
+    const percentuale = denominatore > 0 ? (rientri / denominatore) * 100 : 0;
+
+    return {
+      totalTerritori,
+      rientri,
+      mesiPeriodo: Math.round(mesiPeriodo * 10) / 10,
+      percorrenzaMesi: percorrenzaMesi !== null ? Math.round(percorrenzaMesi * 10) / 10 : null,
+      percorrenzaGiorni: percorrenzaGiorni !== null ? Math.round(percorrenzaGiorni * 100) / 100 : null,
+      percentuale: Math.round(percentuale * 100) / 100,
+      periodStart: pStart,
+      periodEnd: pEnd
+    };
+  }, [territori, assignments, coverageMode, coverageStart, coverageEnd]);
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" style={{ maxWidth: '480px', maxHeight: '92vh', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }} onClick={(e) => e.stopPropagation()}>
+        {/* Header — same pattern as StatsView */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ width: '40px', height: '40px', background: 'var(--primary-soft)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' }}>
+              <TrendingUp size={20} />
+            </div>
+            <div>
+              <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 700 }}>Media Percorrenza</h2>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Territori della congregazione</div>
+            </div>
+          </div>
+          <button className="btn btn-secondary clickable" onClick={onClose} style={{ padding: '8px', width: '36px', height: '36px' }}>
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Period toggle */}
+        <div style={{ marginBottom: '20px', padding: '16px', background: 'var(--bg-app)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', gap: '12px', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)' }}>
+            <Calendar size={14} /> Periodo di riferimento
+          </div>
+          <div style={{ display: 'flex', gap: '4px', background: 'var(--bg-card)', borderRadius: '8px', padding: '3px', border: '1px solid var(--border-light)' }}>
+            <button
+              className="clickable"
+              onClick={() => setCoverageMode('6m')}
+              style={{ flex: 1, padding: '8px 16px', borderRadius: '6px', border: 'none', fontSize: '13px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', background: coverageMode === '6m' ? 'var(--primary)' : 'transparent', color: coverageMode === '6m' ? 'white' : 'var(--text-muted)' }}
+            >
+              Ultimi 6 mesi
+            </button>
+            <button
+              className="clickable"
+              onClick={() => setCoverageMode('custom')}
+              style={{ flex: 1, padding: '8px 16px', borderRadius: '6px', border: 'none', fontSize: '13px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', background: coverageMode === 'custom' ? 'var(--primary)' : 'transparent', color: coverageMode === 'custom' ? 'white' : 'var(--text-muted)' }}
+            >
+              Periodo custom
+            </button>
+          </div>
+
+          {coverageMode === 'custom' && (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>Dal</label>
+                <input type="date" className="filter-select" style={{ width: '100%', padding: '8px' }} value={coverageStart} onChange={(e) => setCoverageStart(e.target.value)} />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>Al</label>
+                <input type="date" className="filter-select" style={{ width: '100%', padding: '8px' }} value={coverageEnd} onChange={(e) => setCoverageEnd(e.target.value)} />
+              </div>
+            </div>
+          )}
+
+          {coverageMode === '6m' && (
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Clock size={12} />
+              {stats.periodStart.toLocaleDateString('it-IT')} — {stats.periodEnd.toLocaleDateString('it-IT')}
+            </div>
+          )}
+        </div>
+
+        {/* Content (no scroll) */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* Big result */}
+          <div style={{ textAlign: 'center', padding: '16px 0 20px' }}>
+            {stats.percorrenzaMesi !== null ? (
+              <>
+                <div style={{ fontSize: '48px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1, letterSpacing: '-2px' }}>
+                  {stats.percorrenzaMesi.toLocaleString('it-IT', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                </div>
+                <div style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text-muted)', marginTop: '6px' }}>mesi</div>
+                <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '6px', opacity: 0.7 }}>
+                  ≈ {stats.percorrenzaGiorni.toLocaleString('it-IT', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} giorni
+                </div>
+              </>
+            ) : (
+              <div style={{ fontSize: '14px', color: 'var(--text-muted)', padding: '20px 0' }}>Nessun rientro nel periodo selezionato</div>
+            )}
+          </div>
+
+          {/* Stats cards */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+            <div className="card" style={{ padding: '12px 4px', alignItems: 'center', textAlign: 'center', background: 'var(--bg-app)', border: '1px solid var(--primary)20', borderTop: '4px solid var(--primary)', gap: '4px' }}>
+              <div style={{ color: 'var(--primary)' }}><MapIcon size={16} /></div>
+              <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>Territori</div>
+              <div style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)' }}>{stats.totalTerritori}</div>
+            </div>
+            <div className="card" style={{ padding: '12px 4px', alignItems: 'center', textAlign: 'center', background: 'var(--bg-app)', border: '1px solid #10B98120', borderTop: '4px solid #10B981', gap: '4px' }}>
+              <div style={{ color: '#10B981' }}><CheckCircle size={16} /></div>
+              <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>Rientri</div>
+              <div style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)' }}>{stats.rientri}</div>
+            </div>
+            <div className="card" style={{ padding: '12px 4px', alignItems: 'center', textAlign: 'center', background: 'var(--bg-app)', border: '1px solid #F59E0B20', borderTop: '4px solid #F59E0B', gap: '4px' }}>
+              <div style={{ color: '#F59E0B' }}><TrendingUp size={16} /></div>
+              <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>Copertura</div>
+              <div style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)' }}>{stats.percentuale.toLocaleString('it-IT', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%</div>
+            </div>
+          </div>
+
+          {/* Info button */}
+          <div style={{ textAlign: 'center', paddingTop: '4px' }}>
+            <button
+              className="btn btn-secondary clickable"
+              onClick={() => setShowCalcInfo(!showCalcInfo)}
+              style={{ fontSize: '12px', padding: '6px 14px', borderRadius: '20px', display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--primary)', borderColor: showCalcInfo ? 'var(--primary)' : 'var(--border-medium)' }}
+            >
+              <Info size={14} /> Come si calcola?
+            </button>
+          </div>
+        </div>
+
+        {/* Calc overlay — absolute, covers the modal content */}
+        {showCalcInfo && (
+          <div
+            onClick={() => setShowCalcInfo(false)}
+            style={{ position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', zIndex: 10, borderRadius: 'inherit', cursor: 'pointer' }}
+          >
+            <div onClick={(e) => e.stopPropagation()} style={{ padding: '24px', background: 'white', borderRadius: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.12)', border: '1px solid #dbe4ff', fontSize: '13px', lineHeight: 1.8, color: '#334155', maxWidth: '360px', width: '100%' }}>
+              <div style={{ fontWeight: 700, fontSize: '16px', marginBottom: '12px', color: '#1e293b', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Info size={18} color="var(--primary)" /> Formula di calcolo
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '12px', background: '#f8fafc', borderRadius: '8px', fontFamily: 'monospace', fontSize: '12px' }}>
+                <span>n. mesi × n. territori = {stats.mesiPeriodo} × {stats.totalTerritori} = {Math.round(stats.mesiPeriodo * stats.totalTerritori)}</span>
+                <span>Risultato ÷ n. rientri = {stats.rientri > 0 ? `${Math.round(stats.mesiPeriodo * stats.totalTerritori)} ÷ ${stats.rientri} = ${stats.percorrenzaMesi}` : '—'}</span>
+              </div>
+              <div style={{ marginTop: '12px', color: 'var(--primary)', fontWeight: 600, fontSize: '13px' }}>
+                Il territorio è stato percorso ogni {stats.percorrenzaMesi !== null ? `${stats.percorrenzaMesi.toLocaleString('it-IT')} mesi` : '—'}.
+              </div>
+              <div style={{ marginTop: '16px', textAlign: 'center' }}>
+                <button className="btn btn-secondary clickable" onClick={() => setShowCalcInfo(false)} style={{ fontSize: '12px', padding: '6px 20px', borderRadius: '20px' }}>
+                  Chiudi
+                </button>
+              </div>
             </div>
           </div>
         )}
