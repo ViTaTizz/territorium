@@ -58,9 +58,8 @@ body {
 
 /* Glassmorphism Header */
 .glass {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.95);
+  /* backdrop-filter removed to prevent mobile jitter */
   border-bottom: 1px solid var(--border-medium);
 }
 
@@ -70,6 +69,9 @@ body {
   z-index: 100;
   background: var(--bg-app);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  /* Hardware acceleration to fix sticky jitter */
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .clickable {
@@ -116,6 +118,7 @@ body {
   color: var(--text-secondary);
   position: relative;
   transition: color 0.2s ease;
+  cursor: pointer;
 }
 
 .tab::after {

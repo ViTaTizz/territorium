@@ -571,7 +571,7 @@ function App() {
           {['disponibili', 'lavorazione', 'storico'].map(tab => {
             const labels = { disponibili: 'Disponibili', lavorazione: 'In Lavorazione', storico: 'Rientri' };
             return (
-              <div key={tab} className={`tab clickable ${activeTab === tab ? 'active' : ''}`} onClick={() => setActiveTab(tab)}>
+              <div key={tab} className={`tab ${activeTab === tab ? 'active' : ''}`} onClick={() => setActiveTab(tab)}>
                 {labels[tab]}
               </div>
             );
