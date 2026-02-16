@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { supabase } from './lib/supabase';
 import { useAuth } from './context/AuthContext';
+import UpdatePassword from './components/UpdatePassword';
 import {
   Map as MapIcon,
   User,
@@ -24,7 +25,8 @@ import {
   AlertOctagon,
   TrendingUp,
   ClipboardList,
-  CheckSquare
+  CheckSquare,
+  Lock
 } from 'lucide-react';
 import { PieChart as RePieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
@@ -237,6 +239,8 @@ function App() {
   const [showStats, setShowStats] = useState(false);
   const [showPercorrenza, setShowPercorrenza] = useState(false);
   const [showS13Queue, setShowS13Queue] = useState(false);
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
+  const [showUpdatePassword, setShowUpdatePassword] = useState(false);
   const [flashUpdate, setFlashUpdate] = useState(false);
 
   const fetchData = useCallback(async () => {
@@ -250,6 +254,15 @@ function App() {
     setLoading(false);
     setFlashUpdate(false);
   }, [user]);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsPasswordRecovery(true);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -506,7 +519,14 @@ function App() {
     return assignments.filter(a => a.s13_assign_marked === false || (a.return_date && a.s13_return_marked === false)).length;
   }, [assignments]);
 
+  if (isPasswordRecovery) return <UpdatePassword />;
+  if (showUpdatePassword) return <UpdatePassword onCancel={() => setShowUpdatePassword(false)} />;
   if (!user) return <Login />;
+
+  // Forced password reset for new accounts
+  if (!user.user_metadata?.password_set) {
+    return <UpdatePassword />;
+  }
 
   if (loading) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -540,6 +560,7 @@ function App() {
             <button className={`btn btn-secondary clickable ${flashUpdate ? 'pulse-update' : ''}`} onClick={fetchData} title="Ricarica" style={{ width: '34px', height: '34px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <RefreshCw size={16} className={loading ? 'spin' : ''} />
             </button>
+
             <button className="btn btn-secondary clickable" onClick={signOut} title="Esci" style={{ width: '34px', height: '34px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <LogOut size={18} />
             </button>
