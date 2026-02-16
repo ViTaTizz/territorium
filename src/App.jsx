@@ -40,8 +40,8 @@ const USERS_LIST = [
   { id: '6', name: 'Astuto Carmen' },
   { id: '7', name: 'Astuto Sebastiano' },
   { id: '8', name: 'Battistutta Carlo' },
-  { id: '9', name: 'Battistutta Gabriele' },
-  { id: '10', name: 'Battistutta Sabrina' },
+  { id: '9', name: 'Gabriele Battistutta' },
+  { id: '10', name: 'Sabrina Battistutta' },
   { id: '11', name: 'Beltrani Lidia' },
   { id: '12', name: 'Benzoni Rosangela' },
   { id: '13', name: 'Bertoncello Giancarlo' },
@@ -53,66 +53,66 @@ const USERS_LIST = [
   { id: '19', name: 'Ceretto Amalia' },
   { id: '20', name: 'Ceretto Roberto' },
   { id: '21', name: 'Chavarria Antonio' },
-  { id: '22', name: 'Chavarria Emily' },
-  { id: '23', name: 'Chavarria Evelyn' },
+  { id: '22', name: 'Emily Chavarria' },
+  { id: '23', name: 'Evelyn Chavarria' },
   { id: '24', name: 'Cona Angelo' },
   { id: '25', name: 'Cona Dario' },
-  { id: '26', name: 'Cona Rosa' },
-  { id: '27', name: 'Conte Barbara' },
-  { id: '28', name: 'Conte Marco' },
+  { id: '26', name: 'Rosa Cona' },
+  { id: '27', name: 'Barbara Conte' },
+  { id: '28', name: 'Marco Conte' },
   { id: '29', name: 'Cribellati Gianfranco' },
-  { id: '30', name: 'Crittino Fabio' },
+  { id: '30', name: 'Fabio Crittino' },
   { id: '31', name: 'De Cesare Maria' },
   { id: '32', name: 'De Cesare Santino' },
   { id: '33', name: 'De Narzio Paola' },
   { id: '34', name: 'De Vita Barbara' },
   { id: '35', name: 'DeGiovanni Marco' },
   { id: '36', name: 'Dierna Laura' },
-  { id: '37', name: 'Dierna Rocco' },
-  { id: '38', name: 'Driusso Mauro' },
-  { id: '39', name: 'Egitto Anna' },
-  { id: '40', name: 'Egitto Salvatore' },
-  { id: '41', name: 'Egitto Valentina' },
-  { id: '42', name: 'Ferrara Angela' },
-  { id: '43', name: 'Ferrara Gaetano' },
-  { id: '44', name: 'Floris Alessia' },
-  { id: '45', name: 'Floris Claudio' },
-  { id: '46', name: 'Formigoni William' },
-  { id: '47', name: 'Frustairero Antonia' },
+  { id: '37', name: 'Rocco Dierna' },
+  { id: '38', name: 'Mauro Driusso' },
+  { id: '39', name: 'Anna Egitto' },
+  { id: '40', name: 'Salvatore Egitto' },
+  { id: '41', name: 'Valentina Egitto' },
+  { id: '42', name: 'Angela Ferrara' },
+  { id: '43', name: 'Gaetano Ferrara' },
+  { id: '44', name: 'Alessia Floris' },
+  { id: '45', name: 'Claudio Floris' },
+  { id: '46', name: 'William Formigoni' },
+  { id: '47', name: 'Antonia Frustairero' },
   { id: '48', name: 'Giraudo Alessandra' },
   { id: '49', name: 'Giraudo Federico' },
-  { id: '50', name: 'Giraudo Flavio' },
-  { id: '51', name: 'Giraudo Matteo' },
+  { id: '50', name: 'Flavio Giraudo' },
+  { id: '51', name: 'Matteo Giraudo' },
   { id: '52', name: 'Gruggio Mariella' },
   { id: '53', name: 'Guerrera Maria' },
   { id: '54', name: 'Imerone Alessandro' },
   { id: '55', name: 'Manfredi Irene' },
   { id: '56', name: 'Martin Lidia' },
-  { id: '57', name: 'Massa Michele' },
+  { id: '57', name: 'Michele Massa' },
   { id: '58', name: 'Monte Angela' },
-  { id: '59', name: 'Monte Domenico' },
-  { id: '60', name: 'Monte Giuseppina' },
-  { id: '61', name: 'Monte Maria Teresa' },
-  { id: '62', name: 'Monte Tommaso' },
-  { id: '63', name: 'Montesso Ivana' },
-  { id: '64', name: 'Nigra Angela' },
-  { id: '65', name: 'Nigra Rosalba' },
-  { id: '66', name: 'Nodari Daniela' },
-  { id: '67', name: 'Nodari Pier Giacomo' },
-  { id: '68', name: 'Palmirotta Gessica' },
-  { id: '69', name: 'Palmirotta Loretta' },
-  { id: '70', name: 'Palmirotta Stefano' },
-  { id: '71', name: 'Palmirotta Valentino' },
+  { id: '59', name: 'Domenico Monte' },
+  { id: '60', name: 'Giuseppina Monte' },
+  { id: '61', name: 'Maria Teresa Monte' },
+  { id: '62', name: 'Tommaso Monte' },
+  { id: '63', name: 'Ivana Montesso' },
+  { id: '64', name: 'Angela Nigra' },
+  { id: '65', name: 'Rosalba Nigra' },
+  { id: '66', name: 'Daniela Nodari' },
+  { id: '67', name: 'Pier Giacomo Nodari' },
+  { id: '68', name: 'Gessica Palmirotta' },
+  { id: '69', name: 'Loretta Palmirotta' },
+  { id: '70', name: 'Stefano Palmirotta' },
+  { id: '71', name: 'Valentino Palmirotta' },
   { id: '72', name: 'Peretti Teresa' },
   { id: '73', name: 'Piazzano Antonella' },
   { id: '74', name: 'Piazzano Daniele' },
-  { id: '75', name: 'Plona Adriano' },
-  { id: '76', name: 'Plona Annarita' },
-  { id: '77', name: 'Poeta Valeria' },
-  { id: '78', name: 'Poeta Vittorio' },
-  { id: '79', name: 'Renditore Fabrizio' },
-  { id: '80', name: 'Renditore Gian Pietro' },
-  { id: '81', name: 'Renditore Lucia' },
+  { id: '75', name: 'Adriano Plona' },
+  { id: '76', name: 'Annarita Plona' },
+  { id: '77', name: 'Valeria Poeta' },
+  { id: '78', name: 'Vittorio Poeta' },
+  { id: '79', name: 'Fabrizio Renditore' },
+  { id: '80', name: 'Gian Pietro Renditore' },
+  { id: '81', name: 'Lucia Renditore' },
   { id: '82', name: 'Renditore Sabrina' },
   { id: '83', name: 'Rovea Ernestina' },
   { id: '84', name: 'Sabarino Giovanni' },
@@ -341,6 +341,13 @@ function App() {
     return { status: 'ok', daysLeft };
   }, []);
 
+  // Helper: compare names regardless of order (e.g. "Sabarino Rachele" vs "Rachele Sabarino")
+  const namesMatch = useCallback((nameA, nameB) => {
+    if (!nameA || !nameB) return nameA === nameB;
+    const normalize = (n) => n.toLowerCase().split(' ').sort().join(' ').trim();
+    return normalize(nameA) === normalize(nameB);
+  }, []);
+
   const filteredWorking = useMemo(() => {
     return assignments
       .filter(a => !a.is_completed)
@@ -350,7 +357,7 @@ function App() {
       }))
       .filter(a => a.territory)
       .filter(a => (filterCountry === '' || a.territory.country === filterCountry))
-      .filter(a => (filterAssignee === '' || a.assignee_name === filterAssignee))
+      .filter(a => (filterAssignee === '' || namesMatch(a.assignee_name, filterAssignee)))
       .filter(a => {
         if (filterExpiry === '') return true;
         const { status } = getExpiryStatus(a.assignment_date);
@@ -359,8 +366,21 @@ function App() {
         if (filterExpiry === 'alert') return status === 'expiring' || status === 'expired';
         return true;
       })
-      .filter(a => (searchQuery === '' || a.territory.country.toLowerCase().includes(searchQuery.toLowerCase()) || a.territory.number.includes(searchQuery) || a.assignee_name.toLowerCase().includes(searchQuery.toLowerCase())));
-  }, [assignments, territori, filterCountry, filterAssignee, filterExpiry, searchQuery, getExpiryStatus]);
+      .filter(a => {
+        if (searchQuery === '') return true;
+        const q = searchQuery.toLowerCase();
+        const t = a.territory;
+        const name = a.assignee_name.toLowerCase();
+        // Support partial fuzzy match for search: if all words in search are present in name
+        const searchWords = q.split(' ').filter(w => w.length > 0);
+        const nameWords = name.split(' ');
+        const nameMatchesSearch = searchWords.every(sw => nameWords.some(nw => nw.includes(sw)));
+
+        return t.country.toLowerCase().includes(q) ||
+          t.number.includes(q) ||
+          nameMatchesSearch;
+      });
+  }, [assignments, territori, filterCountry, filterAssignee, filterExpiry, searchQuery, getExpiryStatus, namesMatch]);
 
   const filteredReturned = useMemo(() => {
     return territori
