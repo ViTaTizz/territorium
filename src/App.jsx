@@ -237,6 +237,7 @@ function App() {
   const [showStats, setShowStats] = useState(false);
   const [showPercorrenza, setShowPercorrenza] = useState(false);
   const [showS13Queue, setShowS13Queue] = useState(false);
+  const [flashUpdate, setFlashUpdate] = useState(false);
 
   const fetchData = useCallback(async () => {
     if (!user) return;
@@ -247,6 +248,7 @@ function App() {
     setTerritori(tData || []);
     setAssignments(aData || []);
     setLoading(false);
+    setFlashUpdate(false);
   }, [user]);
 
   useEffect(() => {
@@ -260,6 +262,7 @@ function App() {
     const channel = supabase.channel('app_changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'territori' }, (payload) => {
         console.log('Evento Territori:', payload);
+        setFlashUpdate(true);
         if (payload.eventType === 'INSERT') {
           setTerritori(prev => {
             if (prev.some(t => t.id === payload.new.id)) return prev;
@@ -273,6 +276,7 @@ function App() {
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'assegnazioni' }, (payload) => {
         console.log('Evento Assegnazioni:', payload);
+        setFlashUpdate(true);
         if (payload.eventType === 'INSERT') {
           setAssignments(prev => {
             if (prev.some(a => a.id === payload.new.id)) return prev;
@@ -533,7 +537,7 @@ function App() {
             <button className="btn btn-secondary clickable" onClick={() => setShowPercorrenza(!showPercorrenza)} title="Media Percorrenza" style={{ width: '34px', height: '34px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: showPercorrenza ? '#8b5cf6' : 'inherit', borderColor: showPercorrenza ? '#8b5cf6' : 'var(--border-medium)' }}>
               <TrendingUp size={16} />
             </button>
-            <button className="btn btn-secondary clickable" onClick={fetchData} title="Ricarica" style={{ width: '34px', height: '34px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <button className={`btn btn-secondary clickable ${flashUpdate ? 'pulse-update' : ''}`} onClick={fetchData} title="Ricarica" style={{ width: '34px', height: '34px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <RefreshCw size={16} className={loading ? 'spin' : ''} />
             </button>
             <button className="btn btn-secondary clickable" onClick={signOut} title="Esci" style={{ width: '34px', height: '34px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -561,23 +565,23 @@ function App() {
 
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {activeTab !== 'storico' && (
-              <select className="filter-select clickable" value={filterCountry} onChange={(e) => setFilterCountry(e.target.value)} style={{ flex: '1 1 auto', minWidth: '90px' }}>
+              <select className="filter-select" value={filterCountry} onChange={(e) => setFilterCountry(e.target.value)} style={{ flex: '1 1 auto', minWidth: '90px' }}>
                 <option value="">Paese</option>
                 {countries.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             )}
             {activeTab === 'disponibili' ? (
-              <select className="filter-select clickable" value={filterType} onChange={(e) => setFilterType(e.target.value)} style={{ flex: '1 1 auto', minWidth: '80px' }}>
+              <select className="filter-select" value={filterType} onChange={(e) => setFilterType(e.target.value)} style={{ flex: '1 1 auto', minWidth: '80px' }}>
                 <option value="">Tipo</option>
                 {types.map(t => <option key={t} value={t}>{t}</option>)}
               </select>
             ) : activeTab === 'lavorazione' ? (
               <>
-                <select className="filter-select clickable" value={filterAssignee} onChange={(e) => setFilterAssignee(e.target.value)} style={{ flex: '1 1 auto', minWidth: '120px' }}>
+                <select className="filter-select" value={filterAssignee} onChange={(e) => setFilterAssignee(e.target.value)} style={{ flex: '1 1 auto', minWidth: '120px' }}>
                   <option value="">Incaricato</option>
                   {USERS_LIST.map(u => <option key={u.name} value={u.name}>{u.name}</option>)}
                 </select>
-                <select className="filter-select clickable" value={filterExpiry} onChange={(e) => setFilterExpiry(e.target.value)} style={{ flex: '1 1 auto', minWidth: '110px' }}>
+                <select className="filter-select" value={filterExpiry} onChange={(e) => setFilterExpiry(e.target.value)} style={{ flex: '1 1 auto', minWidth: '110px' }}>
                   <option value="">Scadenza</option>
                   <option value="alert">⚠️ In scadenza + Scaduti</option>
                   <option value="expiring">🟡 In scadenza</option>
@@ -749,11 +753,11 @@ function App() {
             <div className="modal-content" onClick={e => e.stopPropagation()}>
               <h2 style={{ marginBottom: '24px' }}>Assegna Mappa</h2>
               <div style={{ display: 'grid', gap: '16px', marginBottom: '24px' }}>
-                <select className="filter-select clickable" style={{ width: '100%' }} value={selectedTerritory?.id || ''} onChange={e => setSelectedTerritory(territori.find(t => t.id === e.target.value))}>
+                <select className="filter-select" style={{ width: '100%' }} value={selectedTerritory?.id || ''} onChange={e => setSelectedTerritory(territori.find(t => t.id === e.target.value))}>
                   <option value="">Seleziona Mappa</option>
                   {territori.filter(t => t.is_available).map(t => <option key={t.id} value={t.id}>{t.country} #{t.number}</option>)}
                 </select>
-                <select className="filter-select clickable" style={{ width: '100%' }} value={selectedAssignee} onChange={e => setSelectedAssignee(e.target.value)}>
+                <select className="filter-select" style={{ width: '100%' }} value={selectedAssignee} onChange={e => setSelectedAssignee(e.target.value)}>
                   <option value="">Seleziona Incaricato</option>
                   {USERS_LIST.map(u => <option key={u.name} value={u.name}>{u.name}</option>)}
                 </select>
