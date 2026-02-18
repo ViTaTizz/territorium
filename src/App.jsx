@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { supabase } from './lib/supabase';
 import { useAuth } from './context/AuthContext';
 import UpdatePassword from './components/UpdatePassword';
+import { exportPercorrenzaReport } from './lib/exportPercorrenza';
 import {
   Map as MapIcon,
   User,
@@ -1244,6 +1245,9 @@ function PercorrenzaView({ territori, assignments, onClose }) {
               <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Territori della congregazione</div>
             </div>
           </div>
+          <button className="btn btn-secondary clickable" onClick={() => exportPercorrenzaReport(stats, assignments, territori)} title="Esporta PDF" style={{ padding: '8px', width: '36px', height: '36px', marginRight: '8px' }}>
+            <Download size={18} />
+          </button>
           <button className="btn btn-secondary clickable" onClick={onClose} style={{ padding: '8px', width: '36px', height: '36px' }}>
             <X size={18} />
           </button>
