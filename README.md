@@ -14,6 +14,10 @@ Tutto ciò che ti serve è il link dell'app e le tue credenziali.
 2. Inserisci **Email** e **Password**.
 3. Premi **Accedi**.
 
+> **Nota Importante:** Per garantire la massima sicurezza, **ogni volta che chiudi l'applicazione** dovrai effettuare nuovamente l'accesso.
+>
+> Inoltre, al **primo accesso** con le credenziali fornite, il sistema ti chiederà di impostare una tua **password personale**.
+
 ---
 
 ## 🏠 La Schermata Principale
@@ -87,7 +91,7 @@ Da qui puoi:
 
 ## 📝 Gestione Coda S-13 (Importante!)
 
-Questa sezione è fondamentale per mantenere allineati i dati digitali con i cartoncini S-13 fisici.
+Questa sezione è fondamentale per mantenere allineati i dati digitali con i moduli S-13.
 
 ### 1. Il Pulsante di Ricarica (Verde Pulsante) 🔄
 In alto a destra, accanto al pulsante di uscita, c'è l'icona di ricarica.
@@ -97,11 +101,11 @@ In alto a destra, accanto al pulsante di uscita, c'è l'icona di ricarica.
 ### 2. La Coda S-13 📋
 Ogni volta che **assegni** o **riconsegni** un territorio nell'app, l'operazione viene registrata automaticamente nella **Coda S-13** (l'icona con la lista degli appunti in alto).
 
-*   **A cosa serve:** Ti ricorda di aggiornare il cartoncino S-13 cartaceo.
+*   **A cosa serve:** Ti ricorda di aggiornare i moduli S-13.
 *   **Come si usa:**
     1. Clicca sull'icona della lista 📋 (se ha un pallino rosso, ci sono cose da fare).
     2. Leggi l'operazione richiesta (es. "Segnare uscita T. 101 a Rossi").
-    3. Aggiorna il cartoncino cartaceo.
+    3. Aggiorna i moduli S-13.
     4. Premi **"Fatto"** nell'app per rimuovere la voce dalla lista.
 
 > **Regola d'oro:** La Coda S-13 deve essere sempre vuota a fine servizio!

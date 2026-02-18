@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Manuale Utente — Territorium</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            color: #1e293b;
+            line-height: 1.6;
+            background: #fff;
+            font-size: 14px;
+        }
+
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 16px;
+            border-bottom: 4px solid #2563eb;
+            padding-bottom: 16px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 32px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+            page-break-after: avoid;
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #334155;
+            margin: 24px 0 8px;
+            page-break-after: avoid;
+        }
+
+        p {
+            margin-bottom: 12px;
+        }
+
+        ul,
+        ol {
+            margin: 8px 0 16px 24px;
+        }
+
+        li {
+            margin-bottom: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 13px;
+            page-break-inside: avoid;
+        }
+
+        th,
+        td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .info-box {
+            padding: 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+            background: #eff6ff;
+            border-left: 4px solid #2563eb;
+            page-break-inside: avoid;
+        }
+
+        .info-box.warning {
+            background: #fffbeb;
+            border-left-color: #f59e0b;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            margin-right: 4px;
+        }
+
+        code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <h1>🗺️ Territorium — Guida all'Uso</h1>
+        <p>Benvenuto su <strong>Territorium</strong>, l'applicazione progettata per gestire i territori e le
+            assegnazioni in modo semplice, veloce e organizzato.</p>
+        <p>Questa guida ti accompagnerà passo dopo passo nell'utilizzo dell'app, anche se è la prima volta che la vedi.
+        </p>
+
+        <h2>🚀 Per Iniziare</h2>
+        <h3>1. Accesso</h3>
+        <p>Tutto ciò che ti serve è il link dell'app e le tue credenziali.</p>
+        <ol>
+            <li>Apri il link fornito.</li>
+            <li>Inserisci <strong>Email</strong> e <strong>Password</strong>.</li>
+            <li>Premi <strong>Accedi</strong>.</li>
+        </ol>
+        <div class="info-box warning">
+            <p><strong>Nota Importante:</strong> Per garantire la massima sicurezza, <strong>ogni volta che chiudi
+                    l'applicazione</strong> dovrai effettuare nuovamente l'accesso.</p>
+            <p>Inoltre, al <strong>primo accesso</strong> con le credenziali fornite, il sistema ti chiederà di
+                impostare una tua <strong>password personale</strong>.</p>
+        </div>
+
+        <h2>🏠 La Schermata Principale</h2>
+        <p>Appena entrato, troverai tre schede principali in alto (le "linguette") che organizzano tutto il lavoro:</p>
+        <table>
+            <tr>
+                <th>Scheda</th>
+                <th>Descrizione</th>
+            </tr>
+            <tr>
+                <td><strong>Disponibili</strong></td>
+                <td>Qui trovi i territori liberi, pronti per essere assegnati. Sono ordinati da chi è fermo da più
+                    tempo.</td>
+            </tr>
+            <tr>
+                <td><strong>In Lavorazione</strong></td>
+                <td>Qui vedi i territori attualmente assegnati a qualcuno.</td>
+            </tr>
+            <tr>
+                <td><strong>Rientri / Storico</strong></td>
+                <td>Qui c'è lo storico di tutte le riconsegne, utilissimo per vedere chi ha fatto cosa.</td>
+            </tr>
+        </table>
+
+        <h2>🔍 Ricerca e Filtri (Novità!)</h2>
+        <p>Abbiamo potenziato la ricerca per farti trovare subito quello che cerchi.</p>
+
+        <h3>1. Barra di Ricerca "Smart"</h3>
+        <p>Scrivi nella barra in alto per cercare in <strong>tutti i campi contemporaneamente</strong>.</p>
+        <ul>
+            <li>Il nome del <strong>Paese</strong> (es. "Santhià")</li>
+            <li>Il <strong>Numero</strong> del territorio (es. "101")</li>
+            <li>Il nome dell'<strong>Incaricato</strong> (es. "Mario Rossi")</li>
+            <li>Una <strong>Caratteristica</strong> (es. "Cascine")</li>
+            <li>Una parola nelle <strong>Note</strong> (es. "cane")</li>
+        </ul>
+        <div class="info-box">
+            <strong>Trucco:</strong> Puoi combinare le parole! Scrivendo <strong>"Santhià residenziale"</strong>
+            troverai solo i territori di Santhià che sono residenziali.
+        </div>
+
+        <h3>2. Filtri Rapidi (I Badge)</h3>
+        <p>Sotto la barra di ricerca trovi dei pulsanti (badge) con le caratteristiche principali:</p>
+        <ul>
+            <li>🏠 <strong>Residenziale</strong></li>
+            <li>🚜 <strong>Con cascine</strong></li>
+            <li>🏢🚫 <strong>Senza condomini</strong></li>
+        </ul>
+        <p><strong>Come funzionano:</strong></p>
+        <ul>
+            <li>Clicca su un badge per attivarlo. Vedrai solo i territori che hanno quella caratteristica.</li>
+            <li>Puoi attivarne <strong>più di uno insieme</strong> (es. "Residenziale" + "Senza condomini").</li>
+            <li>Clicca di nuovo per disattivarlo.</li>
+        </ul>
+
+        <h2>📋 Gestire i Territori</h2>
+
+        <h3>Assegnare un Territorio (Dare un territorio a qualcuno)</h3>
+        <ol>
+            <li>Vai nella scheda <strong>Disponibili</strong>.</li>
+            <li>Cerca il territorio desiderato.</li>
+            <li>Premi il pulsante <strong>Assegna</strong> sulla card.</li>
+            <li>Seleziona l'<strong>Incaricato</strong> dal menu a tendina.</li>
+            <li>Conferma la data (di oggi) o cambiala se necessario.</li>
+            <li>Premi <strong>Salva</strong>.</li>
+        </ol>
+
+        <h3>Riconsegnare un Territorio (Ricevere un territorio indietro)</h3>
+        <ol>
+            <li>Vai nella scheda <strong>In Lavorazione</strong>.</li>
+            <li>Cerca il territorio da riconsegnare.</li>
+            <li>Premi il pulsante <strong>Riconsegna</strong>.</li>
+            <li>Conferma la data di rientro.</li>
+            <li>Premi <strong>Salva</strong>.</li>
+        </ol>
+
+        <h3>Vedere i Dettagli e la Mappa</h3>
+        <p>Clicca in qualsiasi momento sulla <strong>card di un territorio</strong> (non sui pulsanti) per aprire la
+            scheda completa.</p>
+        <p>Da qui puoi:</p>
+        <ul>
+            <li>Vedere lo stato attuale e la cronologia.</li>
+            <li><strong>Aprire la Mappa PDF</strong> (cliccando sul pulsante dedicato).</li>
+            <li>Leggere o modificare le <strong>Note</strong> (es. "Attenti al cane al civico 12").</li>
+            <li>Gestire le <strong>Caratteristiche</strong> (aggiungere/rimuovere tag come "Residenziale").</li>
+        </ul>
+
+        <h2>📝 Gestione Coda S-13 (Importante!)</h2>
+        <p>Questa sezione è fondamentale per mantenere allineati i dati digitali con i moduli S-13.</p>
+
+        <h3>1. Il Pulsante di Ricarica (Verde Pulsante) 🔄</h3>
+        <p>In alto a destra, accanto al pulsante di uscita, c'è l'icona di ricarica.</p>
+        <ul>
+            <li><strong>SE PULSA DI VERDE:</strong> Significa che ci sono nuovi dati (es. qualcuno ha fatto
+                un'assegnazione da un altro dispositivo).</li>
+            <li><strong>COSA FARE:</strong> <strong>Premilo obbligatoriamente!</strong> È necessario per vedere le
+                ultime modifiche e mantenere tutto sincronizzato.</li>
+        </ul>
+
+        <h3>2. La Coda S-13 📋</h3>
+        <p>Ogni volta che <strong>assegni</strong> o <strong>riconsegni</strong> un territorio nell'app, l'operazione
+            viene registrata automaticamente nella <strong>Coda S-13</strong> (l'icona con la lista degli appunti in
+            alto).</p>
+        <ul>
+            <li><strong>A cosa serve:</strong> Ti ricorda di aggiornare i moduli S-13.</li>
+            <li><strong>Come si usa:</strong>
+                <ol>
+                    <li>Clicca sull'icona della lista 📋 (se ha un pallino rosso, ci sono cose da fare).</li>
+                    <li>Leggi l'operazione richiesta (es. "Segnare uscita T. 101 a Rossi").</li>
+                    <li>Aggiorna i moduli S-13.</li>
+                    <li>Premi <strong>"Fatto"</strong> nell'app per rimuovere la voce dalla lista.</li>
+                </ol>
+            </li>
+        </ul>
+        <div class="info-box warning">
+            <strong>Regola d'oro:</strong> La Coda S-13 deve essere sempre vuota a fine servizio!
+        </div>
+
+
+
+        <h2>📊 Statistiche</h2>
+        <p>Premi l'icona del <strong>grafico a torta (📊)</strong> in alto a destra per vedere come sta andando il
+            lavoro.</p>
+        <ul>
+            <li><strong>Grafico:</strong> Vedi a colpo d'occhio la proporzione tra territori liberi, assegnati e
+                lavorati.</li>
+            <li><strong>Numeri:</strong> Vedi quanti territori sono stati lavorati negli ultimi 4 mesi.</li>
+        </ul>
+
+        <h2>❓ Domande Frequenti</h2>
+        <p><strong>Cosa significano i colori dei badge?</strong><br>
+            Se vedi un avviso giallo o rosso su un territorio assegnato, significa che è fuori da molto tempo (vicino o
+            oltre i 4 mesi).</p>
+
+        <p><strong>Posso modificare un territorio dopo averlo creato?</strong><br>
+            Sì, clicca sopra la sua card per aprire i dettagli e modifica quello che vuoi.</p>
+    </div>
+</body>
+
+</html>
