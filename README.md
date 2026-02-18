@@ -1,128 +1,132 @@
 # 🗺️ Territorium — Guida all'Uso
 
-Benvenuto su **Territorium**, l'app per gestire i territori e le assegnazioni in modo semplice e veloce.
+Benvenuto su **Territorium**, l'applicazione progettata per gestire i territori e le assegnazioni in modo semplice, veloce e organizzato.
+
+Questa guida ti accompagnerà passo dopo passo nell'utilizzo dell'app, anche se è la prima volta che la vedi.
 
 ---
 
-## 📱 Come Accedere
+## � Per Iniziare
 
-1. Apri il link dell'app dal tuo telefono o computer
-2. Inserisci **email** e **password** che ti sono stati forniti
-3. Premi **Accedi**
+### 1. Accesso
+Tutto ciò che ti serve è il link dell'app e le tue credenziali.
+1. Apri il link fornito.
+2. Inserisci **Email** e **Password**.
+3. Premi **Accedi**.
 
 ---
 
 ## 🏠 La Schermata Principale
 
-Dopo il login vedrai **3 sezioni** in alto (le "linguette"):
+Appena entrato, troverai tre schede principali in alto (le "linguette") che organizzano tutto il lavoro:
 
-| Sezione | Cosa contiene |
-|---------|---------------|
-| **Disponibili** | Territori liberi, pronti per essere assegnati |
-| **In Lavorazione** | Territori attualmente assegnati a qualcuno |
-| **Rientri** | Territori già riconsegnati, dal più recente |
-
-### 🔍 Cercare un territorio
-Usa la **barra di ricerca** per trovare rapidamente un territorio digitando il nome del paese o il numero.
-
-### 🔽 Filtrare i risultati
-- Nella sezione **Disponibili**: puoi filtrare per **Paese** e **Tipo**
-- Nella sezione **In Lavorazione**: puoi filtrare per **Paese** e **Incaricato**
-- Nella sezione **Rientri**: puoi filtrare per **intervallo di date**
+| Scheda | Descrizione |
+| :--- | :--- |
+| **Disponibili** | Qui trovi i territori liberi, pronti per essere assegnati. Sono ordinati da chi è fermo da più tempo. |
+| **In Lavorazione** | Qui vedi i territori attualmente assegnati a qualcuno. |
+| **Rientri / Storico** | Qui c'è lo storico di tutte le riconsegne, utilissimo per vedere chi ha fatto cosa. |
 
 ---
 
-## 📋 Assegnare un Territorio
+## 🔍 Ricerca e Filtri (Novità!)
 
-1. Vai nella sezione **Disponibili**
-2. Trova il territorio che vuoi assegnare
-3. Premi il pulsante **Assegna** sulla card del territorio
-4. Scegli l'**incaricato** dal menu a tendina
-5. Seleziona la **data di assegnazione** (di default è oggi)
-6. Premi **Conferma**
+Abbiamo potenziato la ricerca per farti trovare subito quello che cerchi.
 
-✅ Il territorio si sposterà automaticamente nella sezione **In Lavorazione**.
+### 1. Barra di Ricerca "Smart"
+Scrivi nella barra in alto per cercare in **tutti i campi contemporaneamente**.
+Puoi scrivere:
+*   Il nome del **Paese** (es. "Santhià")
+*   Il **Numero** del territorio (es. "101")
+*   Il nome dell'**Incaricato** (es. "Mario Rossi")
+*   Una **Caratteristica** (es. "Cascine")
+*   Una parola nelle **Note** (es. "cane")
 
----
+> **Trucco:** Puoi combinare le parole! Scrivendo **"Santhià residenziale"** troverai solo i territori di Santhià che sono residenziali.
 
-## 🔄 Riconsegnare un Territorio
+### 2. Filtri Rapidi (I Badge)
+Sotto la barra di ricerca trovi dei pulsanti (badge) con le caratteristiche principali:
+*   🏠 **Residenziale**
+*   🚜 **Con cascine**
+*   🏢🚫 **Senza condomini**
 
-1. Vai nella sezione **In Lavorazione**
-2. Trova il territorio da riconsegnare
-3. Premi il pulsante **Riconsegna**
-4. Seleziona la **data di riconsegna**
-5. Premi **Conferma**
-
-✅ Il territorio tornerà nella sezione **Disponibili** e apparirà anche nei **Rientri**.
-
----
-
-## 📄 Vedere i Dettagli di un Territorio
-
-Tocca qualsiasi card di un territorio per aprire la scheda dettagli. Da qui puoi:
-
-- Vedere **paese**, **numero** e **stato** attuale
-- Vedere chi lo ha in carico (se assegnato)
-- Aprire la **Mappa PDF**
-- Aggiungere o modificare **istruzioni speciali** (note)
-- **Assegnare** o **Riconsegnare** il territorio
+**Come funzionano:**
+*   Clicca su un badge per attivarlo. Vedrai solo i territori che hanno quella caratteristica.
+*   Puoi attivarne **più di uno insieme** (es. "Residenziale" + "Senza condomini").
+*   Clicca di nuovo per disattivarlo.
 
 ---
 
-## 📊 Le Statistiche
+## 📋 Gestire i Territori
 
-Premi l'icona **📊** (grafico a torta) in alto a destra per aprire le statistiche.
+### Assegnare un Territorio (Dare un territorio a qualcuno)
+1. Vai nella scheda **Disponibili**.
+2. Cerca il territorio desiderato.
+3. Premi il pulsante **Assegna** sulla card.
+4. Seleziona l'**Incaricato** dal menu a tendina.
+5. Conferma la data (di oggi) o cambiala se necessario.
+6. Premi **Salva**.
+   *   *Il territorio si sposterà nella scheda "In Lavorazione".*
 
-Vedrai:
-- Un **grafico a torta** con la situazione dei territori
-- **3 card colorate** con i conteggi:
-  - 🔵 **In Lavorazione** — quanti sono attualmente in carico
-  - 🟢 **Rientrati** — quanti sono rientrati nel periodo
-  - 🟡 **Da assegnare** — quanti sono disponibili ma non rientrati nel periodo
+### Riconsegnare un Territorio (Ricevere un territorio indietro)
+1. Vai nella scheda **In Lavorazione**.
+2. Cerca il territorio da riconsegnare.
+3. Premi il pulsante **Riconsegna**.
+4. Conferma la data di rientro.
+5. Premi **Salva**.
+   *   *Il territorio tornerà tra i "Disponibili" e verrà registrato nello "Storico".*
 
-### Cambiare il periodo
-- Di base vengono mostrati gli **ultimi 4 mesi**
-- Puoi scegliere un periodo personalizzato con il selettore date
-- Premi **Ripristina ultimi 4 mesi** per tornare al periodo standard
-
-### Approfondire un dato
-Tocca una delle **3 card colorate** (o una fetta del grafico) per vedere la lista dettagliata dei territori in quella categoria.
-
----
-
-## ➕ Aggiungere un Nuovo Territorio
-
-1. Premi il pulsante **+** (in basso a destra)
-2. Compila i campi: **Paese**, **Numero**, **Tipo** e **URL Mappa PDF**
-3. Premi **Salva**
-
----
-
-## 🔄 Aggiornare i Dati
-
-Se vuoi essere sicuro di avere i dati più aggiornati, premi l'icona **🔄** (frecce circolari) in alto a destra.
-
-> **Nota**: l'app si aggiorna automaticamente in tempo reale, quindi di solito non è necessario ricaricare manualmente.
+### Vedere i Dettagli e la Mappa
+Clicca in qualsiasi momento sulla **card di un territorio** (non sui pulsanti) per aprire la scheda completa.
+Da qui puoi:
+*   Vedere lo stato attuale e la cronologia.
+*   **Aprire la Mappa PDF** (cliccando sul pulsante dedicato).
+*   Leggere o modificare le **Note** (es. "Attenti al cane al civico 12").
+*   Gestire le **Caratteristiche** (aggiungere/rimuovere tag come "Residenziale").
 
 ---
 
-## 🚪 Uscire dall'App
+## 📝 Gestione Coda S-13 (Importante!)
 
-Premi l'icona **🚪** (porta con freccia) in alto a destra per fare il logout.
+Questa sezione è fondamentale per mantenere allineati i dati digitali con i cartoncini S-13 fisici.
+
+### 1. Il Pulsante di Ricarica (Verde Pulsante) 🔄
+In alto a destra, accanto al pulsante di uscita, c'è l'icona di ricarica.
+*   **SE PULSA DI VERDE:** Significa che ci sono nuovi dati (es. qualcuno ha fatto un'assegnazione da un altro dispositivo).
+*   **COSA FARE:** **Premilo obbligatoriamente!** È necessario per vedere le ultime modifiche e mantenere tutto sincronizzato.
+
+### 2. La Coda S-13 📋
+Ogni volta che **assegni** o **riconsegni** un territorio nell'app, l'operazione viene registrata automaticamente nella **Coda S-13** (l'icona con la lista degli appunti in alto).
+
+*   **A cosa serve:** Ti ricorda di aggiornare il cartoncino S-13 cartaceo.
+*   **Come si usa:**
+    1. Clicca sull'icona della lista 📋 (se ha un pallino rosso, ci sono cose da fare).
+    2. Leggi l'operazione richiesta (es. "Segnare uscita T. 101 a Rossi").
+    3. Aggiorna il cartoncino cartaceo.
+    4. Premi **"Fatto"** nell'app per rimuovere la voce dalla lista.
+
+> **Regola d'oro:** La Coda S-13 deve essere sempre vuota a fine servizio!
+
+---
+
+## 📊 Statistiche
+
+Premi l'icona del **grafico a torta (📊)** in alto a destra per vedere come sta andando il lavoro.
+*   **Grafico:** Vedi a colpo d'occhio la proporzione tra territori liberi, assegnati e lavorati.
+*   **Numeri:** Vedi quanti territori sono stati lavorati negli ultimi 4 mesi (o in un periodo a tua scelta).
 
 ---
 
 ## ❓ Domande Frequenti
 
-**D: I dati si salvano automaticamente?**
-Sì! Ogni azione (assegnazione, riconsegna, modifica note) viene salvata immediatamente.
+**Cosa significano i colori dei badge?**
+*   **Giallo/Rosso (Scadenza):** Se vedi un avviso giallo o rosso su un territorio assegnato, significa che è fuori da molto tempo (vicino o oltre i 4 mesi). È ora di chiederne la riconsegna!
 
-**D: Posso usare l'app dal telefono?**
-Sì, l'app funziona perfettamente sia da computer che da telefono.
+**Posso modificare un territorio dopo averlo creato?**
+*   Sì, clicca sopra la sua card per aprire i dettagli e modifica quello che vuoi (note, tag, ecc.).
 
-**D: Se due persone usano l'app insieme, si vedono gli aggiornamenti?**
-Sì, l'app si aggiorna in tempo reale per tutti.
+**Come faccio a stampare l'elenco?**
+*   Stiamo lavorando a una funzione di esportazione PDF dedicata. Per ora puoi usare la funzione di stampa del browser (Ctrl+P) o fare uno screenshot.
 
 ---
 
-*Buon lavoro con Territorium! 🗺️*
+*Buon lavoro con Territorium!* 🗺️
