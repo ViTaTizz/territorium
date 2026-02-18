@@ -226,6 +226,7 @@ function App() {
   const [filterType, setFilterType] = useState('');
   const [filterAssignee, setFilterAssignee] = useState('');
   const [filterExpiry, setFilterExpiry] = useState('');
+  const [filterTags, setFilterTags] = useState([]);
   const [historyStart, setHistoryStart] = useState('');
   const [historyEnd, setHistoryEnd] = useState('');
 
@@ -317,15 +318,23 @@ function App() {
 
   const countries = useMemo(() => [...new Set(territori.map(t => t.country))], [territori]);
   const types = useMemo(() => [...new Set(territori.map(t => t.type))], [territori]);
+  const availableTags = useMemo(() => ['Residenziale', 'Con cascine', 'Senza condomini'], []);
 
   const filteredAvailable = useMemo(() => {
     return territori
       .filter(t => t.is_available)
       .filter(t => (filterCountry === '' || t.country === filterCountry))
       .filter(t => (filterType === '' || t.type === filterType))
-      .filter(t => (searchQuery === '' || t.country.toLowerCase().includes(searchQuery.toLowerCase()) || t.number.includes(searchQuery)))
+      .filter(t => (filterTags.length === 0 || filterTags.every(ft => t.tags && t.tags.includes(ft))))
+      .filter(t => {
+        if (searchQuery === '') return true;
+        const q = searchQuery.toLowerCase();
+        const searchWords = q.split(' ').filter(w => w.length > 0);
+        const searchableText = `${t.country} ${t.number} ${t.tags?.join(' ') || ''} ${t.notes || ''}`.toLowerCase();
+        return searchWords.every(word => searchableText.includes(word));
+      })
       .sort((a, b) => new Date(a.last_return_date) - new Date(b.last_return_date));
-  }, [territori, filterCountry, filterType, searchQuery]);
+  }, [territori, filterCountry, filterType, filterTags, searchQuery]);
 
   // Helper: compute expiry status for an assignment
   const getExpiryStatus = useCallback((assignmentDate) => {
@@ -359,6 +368,7 @@ function App() {
       .filter(a => a.territory)
       .filter(a => (filterCountry === '' || a.territory.country === filterCountry))
       .filter(a => (filterAssignee === '' || namesMatch(a.assignee_name, filterAssignee)))
+      .filter(a => (filterTags.length === 0 || filterTags.every(ft => a.territory.tags && a.territory.tags.includes(ft))))
       .filter(a => {
         if (filterExpiry === '') return true;
         const { status } = getExpiryStatus(a.assignment_date);
@@ -370,18 +380,13 @@ function App() {
       .filter(a => {
         if (searchQuery === '') return true;
         const q = searchQuery.toLowerCase();
-        const t = a.territory;
-        const name = a.assignee_name.toLowerCase();
-        // Support partial fuzzy match for search: if all words in search are present in name
         const searchWords = q.split(' ').filter(w => w.length > 0);
-        const nameWords = name.split(' ');
-        const nameMatchesSearch = searchWords.every(sw => nameWords.some(nw => nw.includes(sw)));
-
-        return t.country.toLowerCase().includes(q) ||
-          t.number.includes(q) ||
-          nameMatchesSearch;
+        const t = a.territory;
+        // Include assignee name in searchable text for working tab
+        const searchableText = `${t.country} ${t.number} ${t.tags?.join(' ') || ''} ${t.notes || ''} ${a.assignee_name}`.toLowerCase();
+        return searchWords.every(word => searchableText.includes(word));
       });
-  }, [assignments, territori, filterCountry, filterAssignee, filterExpiry, searchQuery, getExpiryStatus, namesMatch]);
+  }, [assignments, territori, filterCountry, filterAssignee, filterExpiry, filterTags, searchQuery, getExpiryStatus, namesMatch]);
 
   const filteredReturned = useMemo(() => {
     return territori
@@ -393,7 +398,15 @@ function App() {
         const end = historyEnd ? new Date(historyEnd) : new Date('2100-01-01');
         return rDate >= start && rDate <= end;
       })
-      .filter(t => (searchQuery === '' || t.country.toLowerCase().includes(searchQuery.toLowerCase()) || t.number.includes(searchQuery)))
+      .filter(t => (filterTags.length === 0 || filterTags.every(ft => t.tags && t.tags.includes(ft))))
+      .filter(t => {
+        if (searchQuery === '') return true;
+        const q = searchQuery.toLowerCase();
+        const searchWords = q.split(' ').filter(w => w.length > 0);
+        // Include tags and notes in searchable text for history tab too
+        const searchableText = `${t.country} ${t.number} ${t.tags?.join(' ') || ''} ${t.notes || ''}`.toLowerCase();
+        return searchWords.every(word => searchableText.includes(word));
+      })
       .sort((a, b) => new Date(b.last_return_date) - new Date(a.last_return_date));
   }, [territori, historyStart, historyEnd, searchQuery]);
 
@@ -505,6 +518,19 @@ function App() {
     }
   };
 
+  const handleUpdateTags = async (territoryId, newTags) => {
+    const { error } = await supabase.from('territori').update({ tags: newTags }).eq('id', territoryId);
+    if (!error) {
+      setTerritori(prev => prev.map(t => t.id === territoryId ? { ...t, tags: newTags } : t));
+      // If detail modal is open with this territory, update it
+      if (selectedTerritory && selectedTerritory.id === territoryId) {
+        setSelectedTerritory(prev => ({ ...prev, tags: newTags }));
+      }
+    } else {
+      alert('Errore aggiornamento tag: ' + error.message);
+    }
+  };
+
   const handleDeleteTerritory = async (id) => {
     if (window.confirm('Sei sicuro di voler eliminare questo territorio?')) {
       const { error } = await supabase.from('territori').delete().eq('id', id);
@@ -605,6 +631,33 @@ function App() {
             <input className="search-input" placeholder="Cerca..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
           </div>
 
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', padding: '4px 0' }}>
+            {availableTags.map(tag => {
+              const isSelected = filterTags.includes(tag);
+              return (
+                <button
+                  key={tag}
+                  className="clickable"
+                  onClick={() => setFilterTags(prev => isSelected ? prev.filter(t => t !== tag) : [...prev, tag])}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '20px',
+                    border: isSelected ? '1px solid var(--primary)' : '1px solid var(--border-medium)',
+                    background: isSelected ? 'var(--primary-soft)' : 'var(--bg-card)',
+                    color: isSelected ? 'var(--primary)' : 'var(--text-secondary)',
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                >
+                  {tag === 'Con cascine' ? '🚜 ' : tag === 'Residenziale' ? '🏠 ' : tag === 'Senza condomini' ? '🏢🚫 ' : ''}{tag}
+                </button>
+              );
+            })}
+          </div>
+
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {activeTab !== 'storico' && (
               <select className="filter-select" value={filterCountry} onChange={(e) => setFilterCountry(e.target.value)} style={{ flex: '1 1 auto', minWidth: '90px' }}>
@@ -613,10 +666,12 @@ function App() {
               </select>
             )}
             {activeTab === 'disponibili' ? (
-              <select className="filter-select" value={filterType} onChange={(e) => setFilterType(e.target.value)} style={{ flex: '1 1 auto', minWidth: '80px' }}>
-                <option value="">Tipo</option>
-                {types.map(t => <option key={t} value={t}>{t}</option>)}
-              </select>
+              <>
+                <select className="filter-select" value={filterType} onChange={(e) => setFilterType(e.target.value)} style={{ flex: '1 1 auto', minWidth: '80px' }}>
+                  <option value="">Tipo</option>
+                  {types.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </>
             ) : activeTab === 'lavorazione' ? (
               <>
                 <select className="filter-select" value={filterAssignee} onChange={(e) => setFilterAssignee(e.target.value)} style={{ flex: '1 1 auto', minWidth: '120px' }}>
@@ -640,7 +695,7 @@ function App() {
             {(searchQuery || filterCountry || filterType || filterAssignee || filterExpiry || historyStart || historyEnd) && (
               <button
                 className="btn btn-secondary clickable"
-                onClick={() => { setSearchQuery(''); setFilterCountry(''); setFilterType(''); setFilterAssignee(''); setFilterExpiry(''); setHistoryStart(''); setHistoryEnd(''); }}
+                onClick={() => { setSearchQuery(''); setFilterCountry(''); setFilterType(''); setFilterAssignee(''); setFilterExpiry(''); setFilterTag(''); setHistoryStart(''); setHistoryEnd(''); }}
                 title="Reset filtri"
                 style={{ width: '36px', height: '36px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: '#DC2626', borderColor: '#FEE2E2' }}
               >
@@ -658,9 +713,16 @@ function App() {
         {activeTab === 'disponibili' ? (
           filteredAvailable.map(t => (
             <div key={t.id} className="card clickable" onClick={() => openDetail(t)}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                 <h3 style={{ margin: 0, fontSize: '18px' }}>{t.country} <span style={{ color: 'var(--primary)' }}>#{t.number}</span></h3>
                 <span className={`badge ${t.type === 'Commerciale' ? 'badge-commercial' : 'badge-ordinary'}`}>{t.type}</span>
+              </div>
+              <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginBottom: '12px' }}>
+                {t.tags && t.tags.map(tag => (
+                  <span key={tag} style={{ fontSize: '10px', padding: '2px 6px', background: 'var(--bg-card)', border: '1px solid var(--border-medium)', borderRadius: '4px', color: 'var(--text-secondary)' }}>
+                    {tag === 'Con cascine' ? '🚜 ' : tag === 'Residenziale' ? '🏠 ' : tag === 'Senza condomini' ? '🏢🚫 ' : ''}{tag}
+                  </span>
+                ))}
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ fontSize: '13px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -676,7 +738,7 @@ function App() {
             const expiry = getExpiryStatus(a.assignment_date);
             return (
               <div key={a.id} className="card clickable" onClick={() => openDetail(a.territory)} style={{ boxShadow: expiry.status === 'expired' ? 'inset 3px 0 0 #DC2626, var(--shadow-sm)' : expiry.status === 'expiring' ? 'inset 3px 0 0 #F59E0B, var(--shadow-sm)' : undefined }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
                   <h3 style={{ margin: 0, fontSize: '18px' }}>{a.territory.country} <span style={{ color: 'var(--primary)' }}>#{a.territory.number}</span></h3>
                   {expiry.status === 'expired' && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', fontWeight: 600, color: '#DC2626', background: '#FEF2F2', padding: '4px 8px', borderRadius: '6px', whiteSpace: 'nowrap' }}>
@@ -689,6 +751,15 @@ function App() {
                     </div>
                   )}
                 </div>
+                {a.territory.tags && a.territory.tags.length > 0 && (
+                  <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginBottom: '12px' }}>
+                    {a.territory.tags.map(tag => (
+                      <span key={tag} style={{ fontSize: '10px', padding: '2px 6px', background: 'var(--bg-card)', border: '1px solid var(--border-medium)', borderRadius: '4px', color: 'var(--text-secondary)' }}>
+                        {tag === 'Con cascine' ? '🚜 ' : tag === 'Residenziale' ? '🏠 ' : tag === 'Senza condomini' ? '🏢🚫 ' : ''}{tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
                   <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'var(--primary-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' }}><User size={18} /></div>
                   <div>
@@ -773,6 +844,38 @@ function App() {
                 </a>
               </div>
               <div style={{ marginBottom: '24px' }}>
+                <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '8px' }}>Caratteristiche</label>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {['Residenziale', 'Con cascine', 'Senza condomini'].map(tag => {
+                    const isSelected = selectedTerritory?.tags?.includes(tag);
+                    return (
+                      <button
+                        key={tag}
+                        className="clickable"
+                        onClick={() => {
+                          const currentTags = selectedTerritory.tags || [];
+                          const newTags = isSelected
+                            ? currentTags.filter(t => t !== tag)
+                            : [...currentTags, tag];
+                          handleUpdateTags(selectedTerritory.id, newTags);
+                        }}
+                        style={{
+                          padding: '6px 12px',
+                          borderRadius: '20px',
+                          border: isSelected ? '1px solid var(--primary)' : '1px solid var(--border-medium)',
+                          background: isSelected ? 'var(--primary-soft)' : 'transparent',
+                          color: isSelected ? 'var(--primary)' : 'var(--text-secondary)',
+                          fontSize: '12px',
+                          fontWeight: 600
+                        }}
+                      >
+                        {tag === 'Con cascine' ? '🚜 ' : tag === 'Residenziale' ? '🏠 ' : tag === 'Senza condomini' ? '🏢🚫 ' : ''}{tag}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div style={{ marginBottom: '24px' }}>
                 <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '8px' }}>Note</label>
                 <textarea className="search-input" style={{ width: '100%', height: '100px' }} value={editNotes} onChange={e => setEditNotes(e.target.value)} />
               </div>
@@ -844,22 +947,26 @@ function App() {
 
 
 
-      {showPercorrenza && (
-        <PercorrenzaView
-          territori={territori}
-          assignments={assignments}
-          onClose={() => setShowPercorrenza(false)}
-        />
-      )}
+      {
+        showPercorrenza && (
+          <PercorrenzaView
+            territori={territori}
+            assignments={assignments}
+            onClose={() => setShowPercorrenza(false)}
+          />
+        )
+      }
 
-      {showS13Queue && (
-        <S13QueueModal
-          assignments={assignments}
-          territori={territori}
-          onClose={() => setShowS13Queue(false)}
-          onUpdateStatus={updateS13Status}
-        />
-      )}
+      {
+        showS13Queue && (
+          <S13QueueModal
+            assignments={assignments}
+            territori={territori}
+            onClose={() => setShowS13Queue(false)}
+            onUpdateStatus={updateS13Status}
+          />
+        )
+      }
     </div >
   );
 }
@@ -1477,8 +1584,19 @@ function AddTerritoryModal({ onClose, onSave }) {
     number: '',
     type: 'Ordinario',
     notes: '',
-    pdf_url: ''
+    pdf_url: '',
+    tags: []
   });
+
+  const toggleTag = (tag) => {
+    setFormData(prev => {
+      const isSelected = prev.tags.includes(tag);
+      return {
+        ...prev,
+        tags: isSelected ? prev.tags.filter(t => t !== tag) : [...prev.tags, tag]
+      };
+    });
+  };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -1506,6 +1624,32 @@ function AddTerritoryModal({ onClose, onSave }) {
           <div>
             <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '6px' }}>URL Mappa PDF</label>
             <input className="search-input" value={formData.pdf_url} onChange={e => setFormData({ ...formData, pdf_url: e.target.value })} placeholder="https://..." />
+          </div>
+          <div>
+            <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '6px' }}>Caratteristiche</label>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              {['Residenziale', 'Con cascine', 'Senza condomini'].map(tag => {
+                const isSelected = formData.tags.includes(tag);
+                return (
+                  <button
+                    key={tag}
+                    className="clickable"
+                    onClick={() => toggleTag(tag)}
+                    style={{
+                      padding: '6px 12px',
+                      borderRadius: '20px',
+                      border: isSelected ? '1px solid var(--primary)' : '1px solid var(--border-medium)',
+                      background: isSelected ? 'var(--primary-soft)' : 'transparent',
+                      color: isSelected ? 'var(--primary)' : 'var(--text-secondary)',
+                      fontSize: '12px',
+                      fontWeight: 600
+                    }}
+                  >
+                    {tag === 'Con cascine' ? '🚜 ' : tag === 'Residenziale' ? '🏠 ' : tag === 'Senza condomini' ? '🏢🚫 ' : ''}{tag}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
         <div style={{ display: 'flex', gap: '12px' }}>
