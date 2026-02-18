@@ -55,7 +55,8 @@ Sotto la barra di ricerca trovi dei pulsanti (badge) con le caratteristiche prin
 
 **Come funzionano:**
 *   Clicca su un badge per attivarlo. Vedrai solo i territori che hanno quella caratteristica.
-*   Puoi attivarne **più di uno insieme** (es. "Residenziale" + "Senza condomini").
+*   Clicca su un badge per attivarlo. Vedrai solo i territori che hanno quella caratteristica.
+*   **Nota:** Puoi selezionarne solo **uno alla volta** (es. se clicchi su "Residenziale" e poi su "Con cascine", il primo si disattiva).
 *   Clicca di nuovo per disattivarlo.
 
 ---

@@ -325,7 +325,7 @@ function App() {
       .filter(t => t.is_available)
       .filter(t => (filterCountry === '' || t.country === filterCountry))
       .filter(t => (filterType === '' || t.type === filterType))
-      .filter(t => (filterTags.length === 0 || filterTags.every(ft => t.tags && t.tags.includes(ft))))
+      .filter(t => (filterTags.length === 0 || filterTags.some(ft => t.tags && t.tags.includes(ft))))
       .filter(t => {
         if (searchQuery === '') return true;
         const q = searchQuery.toLowerCase();
@@ -368,7 +368,7 @@ function App() {
       .filter(a => a.territory)
       .filter(a => (filterCountry === '' || a.territory.country === filterCountry))
       .filter(a => (filterAssignee === '' || namesMatch(a.assignee_name, filterAssignee)))
-      .filter(a => (filterTags.length === 0 || filterTags.every(ft => a.territory.tags && a.territory.tags.includes(ft))))
+      .filter(a => (filterTags.length === 0 || filterTags.some(ft => a.territory.tags && a.territory.tags.includes(ft))))
       .filter(a => {
         if (filterExpiry === '') return true;
         const { status } = getExpiryStatus(a.assignment_date);
@@ -398,7 +398,7 @@ function App() {
         const end = historyEnd ? new Date(historyEnd) : new Date('2100-01-01');
         return rDate >= start && rDate <= end;
       })
-      .filter(t => (filterTags.length === 0 || filterTags.every(ft => t.tags && t.tags.includes(ft))))
+      .filter(t => (filterTags.length === 0 || filterTags.some(ft => t.tags && t.tags.includes(ft))))
       .filter(t => {
         if (searchQuery === '') return true;
         const q = searchQuery.toLowerCase();
@@ -638,7 +638,7 @@ function App() {
                 <button
                   key={tag}
                   className="clickable"
-                  onClick={() => setFilterTags(prev => isSelected ? prev.filter(t => t !== tag) : [...prev, tag])}
+                  onClick={() => setFilterTags(prev => isSelected ? [] : [tag])}
                   style={{
                     padding: '6px 12px',
                     borderRadius: '20px',
@@ -855,8 +855,8 @@ function App() {
                         onClick={() => {
                           const currentTags = selectedTerritory.tags || [];
                           const newTags = isSelected
-                            ? currentTags.filter(t => t !== tag)
-                            : [...currentTags, tag];
+                            ? []
+                            : [tag];
                           handleUpdateTags(selectedTerritory.id, newTags);
                         }}
                         style={{
@@ -1593,7 +1593,7 @@ function AddTerritoryModal({ onClose, onSave }) {
       const isSelected = prev.tags.includes(tag);
       return {
         ...prev,
-        tags: isSelected ? prev.tags.filter(t => t !== tag) : [...prev.tags, tag]
+        tags: isSelected ? [] : [tag]
       };
     });
   };
